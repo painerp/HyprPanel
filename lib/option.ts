@@ -1,9 +1,17 @@
 import { isHexColor } from 'globals/variables';
 import { Variable } from 'resource:///com/github/Aylur/ags/variable.js';
 import { MkOptionsResult } from './types/options';
+import options from '../options.ts';
+
+type ConToggle = {
+    trigger: boolean;
+    opt: string;
+    state: boolean;
+};
 
 type OptProps = {
     persistent?: boolean;
+    connected_toggles?: ConToggle[];
 };
 
 export class Opt<T = unknown> extends Variable<T> {
@@ -11,15 +19,17 @@ export class Opt<T = unknown> extends Variable<T> {
         Service.register(this);
     }
 
-    constructor(initial: T, { persistent = false }: OptProps = {}) {
+    constructor(initial: T, { persistent = false, connected_toggles = [] }: OptProps = {}) {
         super(initial);
         this.initial = initial;
         this.persistent = persistent;
+        this.connected_toggles = connected_toggles;
     }
 
     initial: T;
     id = '';
     persistent: boolean;
+    connected_toggles: ConToggle[];
     toString(): string {
         return `${this.value}`;
     }
@@ -38,6 +48,22 @@ export class Opt<T = unknown> extends Variable<T> {
             const cache = JSON.parse(Utils.readFile(cacheFile) || '{}');
             cache[this.id] = this.value;
             Utils.writeFileSync(JSON.stringify(cache, null, 2), cacheFile);
+
+            for (const { trigger, opt, state } of this.connected_toggles) {
+                if (trigger === this.value) {
+                    try {
+                        // get the option by iterating the opt string and accessing each object
+                        const optArr = opt.split('.');
+                        let option = options;
+                        for (const o of optArr) {
+                            option = option[o];
+                        }
+                        if (option instanceof Opt) option.value = state;
+                    } catch (e) {
+                        print('Error in connected_toggles: ' + e);
+                    }
+                }
+            }
         });
     }
 

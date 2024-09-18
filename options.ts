@@ -833,8 +833,8 @@ const options = mkOptions(OPTIONS, {
         },
         volume: {
             label: opt(true),
-            output: opt(true),
-            input: opt(false),
+            output: opt(true, { connected_toggles: [{ trigger: false, opt: 'bar.volume.input', state: true }] }),
+            input: opt(false, { connected_toggles: [{ trigger: false, opt: 'bar.volume.output', state: true }] }),
             hide_muted_label: opt(false),
         },
         network: {
