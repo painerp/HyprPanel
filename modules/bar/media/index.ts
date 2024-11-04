@@ -5,9 +5,12 @@ import options from 'options';
 import { getCurrentPlayer } from 'lib/shared/media.js';
 import { BarBoxChild } from 'lib/types/bar.js';
 import Button from 'types/widgets/button.js';
-import { Child } from 'lib/types/widget.js';
+import { Attribute, Child } from 'lib/types/widget.js';
+import { runAsyncCommand } from 'customModules/utils.js';
+import { generateMediaLabel } from './helpers.js';
 
-const { show_artist, truncation, truncation_size, show_label, show_active_only } = options.bar.media;
+const { truncation, truncation_size, show_label, show_active_only, rightClick, middleClick, format } =
+    options.bar.media;
 
 const Media = (): BarBoxChild => {
     const activePlayer = Variable(mpris.players[0]);
@@ -23,41 +26,10 @@ const Media = (): BarBoxChild => {
         isVis.value = !show_active_only.value || mpris.players.length > 0;
     });
 
-    const getIconForPlayer = (playerName: string): string => {
-        const windowTitleMap = [
-            ['Firefox', '󰈹'],
-            ['Microsoft Edge', '󰇩'],
-            ['Discord', ''],
-            ['Plex', '󰚺'],
-            ['Spotify', '󰓇'],
-            ['(.*)', '󰝚'],
-        ];
-
-        const foundMatch = windowTitleMap.find((wt) => RegExp(wt[0], 'i').test(playerName));
-
-        return foundMatch ? foundMatch[1] : '󰝚';
-    };
-
     const songIcon = Variable('');
 
-    const mediaLabel = Utils.watch('Media', [mpris, show_artist, truncation, truncation_size, show_label], () => {
-        if (activePlayer.value && show_label.value) {
-            const { track_title, identity, track_artists } = activePlayer.value;
-            songIcon.value = getIconForPlayer(identity);
-            const trackArtist = show_artist.value ? ` - ${track_artists.join(', ')}` : ``;
-            const truncatedLabel = truncation.value
-                ? `${track_title + trackArtist}`.substring(0, truncation_size.value)
-                : `${track_title + trackArtist}`;
-
-            return track_title.length === 0
-                ? `No media playing...`
-                : truncatedLabel.length < truncation_size.value || !truncation.value
-                  ? `${truncatedLabel}`
-                  : `${truncatedLabel.substring(0, truncatedLabel.length - 3)}...`;
-        } else {
-            songIcon.value = getIconForPlayer(activePlayer.value?.identity || '');
-            return `Media`;
-        }
+    const mediaLabel = Utils.watch('Media', [mpris, truncation, truncation_size, show_label, format], () => {
+        return generateMediaLabel(truncation_size, show_label, format, songIcon, activePlayer);
     });
 
     return {
@@ -73,7 +45,7 @@ const Media = (): BarBoxChild => {
                             wave: 'style3',
                             wave2: 'style3',
                         };
-                        return `media ${styleMap[style]}`;
+                        return `media-container ${styleMap[style]}`;
                     },
                 ),
                 child: Widget.Box({
@@ -92,12 +64,17 @@ const Media = (): BarBoxChild => {
         }),
         isVis,
         boxClass: 'media',
-        name: 'media',
         props: {
             on_scroll_up: () => activePlayer.value?.next(),
             on_scroll_down: () => activePlayer.value?.previous(),
-            on_primary_click: (clicked: Button<Child, Child>, event: Gdk.Event): void => {
+            on_primary_click: (clicked: Button<Child, Attribute>, event: Gdk.Event): void => {
                 openMenu(clicked, event, 'mediamenu');
+            },
+            onSecondaryClick: (clicked: Button<Child, Attribute>, event: Gdk.Event): void => {
+                runAsyncCommand(rightClick.value, { clicked, event });
+            },
+            onMiddleClick: (clicked: Button<Child, Attribute>, event: Gdk.Event): void => {
+                runAsyncCommand(middleClick.value, { clicked, event });
             },
         },
     };

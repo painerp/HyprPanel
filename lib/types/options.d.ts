@@ -2,7 +2,7 @@ import { Opt } from 'lib/option';
 import { Variable } from 'types/variable';
 import { defaultColorMap } from './defaults/options';
 
-export type MkOptionsResult<T> = {
+export type MkOptionsResult = {
     configFile: string;
     array: () => Opt[];
     reset: () => Promise<string>;
@@ -11,7 +11,7 @@ export type MkOptionsResult<T> = {
 };
 
 export type RecursiveOptionsObject = {
-    [key: string]: RecursiveOptionsObject | Opt<string | number | boolean> | Opt<any>;
+    [key: string]: RecursiveOptionsObject | Opt<string> | Opt<number> | Opt<boolean>;
 };
 
 export type BarLocation = 'top' | 'bottom';
@@ -57,7 +57,7 @@ export type RowProps<T> = {
     min?: number;
     disabledBinding?: Variable<boolean>;
     exportData?: ThemeExportData;
-    subtitle?: string | VarType<any> | Opt;
+    subtitle?: string | VarType<string> | Opt;
     subtitleLink?: string;
     dependencies?: string[];
     increment?: number;
@@ -213,3 +213,9 @@ type MatugenTheme = 'light' | 'dark';
 
 export type ColorMapKey = keyof typeof defaultColorMap;
 export type ColorMapValue = (typeof defaultColorMap)[ColorMapKey];
+
+export type ScalingPriority = 'gdk' | 'hyprland' | 'both';
+
+export type BluetoothBatteryState = 'paired' | 'connected' | 'always';
+
+export type BorderLocation = 'none' | 'top' | 'right' | 'bottom' | 'left' | 'horizontal' | 'vertical' | 'full';

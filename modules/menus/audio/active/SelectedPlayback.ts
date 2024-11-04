@@ -1,8 +1,12 @@
 const audio = await Service.import('audio');
-import { BarBoxChild } from 'lib/types/bar.js';
 import { getIcon } from '../utils.js';
+import Box from 'types/widgets/box.js';
+import { Attribute, Child } from 'lib/types/widget.js';
+import options from 'options';
 
-const renderActivePlayback = (): BarBoxChild => {
+const { raiseMaximumVolume } = options.menus.volume;
+
+const renderActivePlayback = (): Box<Child, Attribute>[] => {
     return [
         Widget.Box({
             class_name: 'menu-slider-container playback',
@@ -11,20 +15,24 @@ const renderActivePlayback = (): BarBoxChild => {
                     vexpand: false,
                     vpack: 'end',
                     setup: (self) => {
-                        self.hook(audio, () => {
+                        const updateClass = (): void => {
                             const spkr = audio.speaker;
                             const className = `menu-active-button playback ${spkr.is_muted ? 'muted' : ''}`;
-                            return (self.class_name = className);
-                        });
+                            self.class_name = className;
+                        };
+
+                        self.hook(audio.speaker, updateClass, 'notify::is-muted');
                     },
                     on_primary_click: () => (audio.speaker.is_muted = !audio.speaker.is_muted),
                     child: Widget.Icon({
                         class_name: 'menu-active-icon playback',
                         setup: (self) => {
-                            self.hook(audio, () => {
+                            const updateIcon = (): void => {
                                 const isSpeakerMuted = audio.speaker.is_muted !== null ? audio.speaker.is_muted : true;
                                 self.icon = getIcon(audio.speaker.volume, isSpeakerMuted)['spkr'];
-                            });
+                            };
+                            self.hook(audio.speaker, updateIcon, 'notify::volume');
+                            self.hook(audio.speaker, updateIcon, 'notify::is-muted');
                         },
                     }),
                 }),
@@ -47,6 +55,11 @@ const renderActivePlayback = (): BarBoxChild => {
                             min: 0,
                             max: 1,
                             onChange: ({ value }) => (audio.speaker.volume = value),
+                            setup: (self) => {
+                                self.hook(raiseMaximumVolume, () => {
+                                    self.max = raiseMaximumVolume.value ? 1.5 : 1;
+                                });
+                            },
                         }),
                     ],
                 }),

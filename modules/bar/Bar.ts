@@ -20,6 +20,7 @@ import {
     Netstat,
     KbInput,
     Updates,
+    Submap,
     Weather,
     Power,
 } from './Exports';
@@ -37,6 +38,7 @@ import Window from 'types/widgets/window.js';
 
 const { layouts } = options.bar;
 const { location } = options.theme.bar;
+const { location: borderLocation } = options.theme.bar.border;
 
 export type BarWidget = keyof typeof widget;
 
@@ -57,6 +59,7 @@ type Section =
     | 'netstat'
     | 'kbinput'
     | 'updates'
+    | 'submap'
     | 'weather'
     | 'power'
     | 'systray';
@@ -108,6 +111,7 @@ const widget = {
     netstat: (): Button<Child, Attribute> => WidgetContainer(Netstat()),
     kbinput: (): Button<Child, Attribute> => WidgetContainer(KbInput()),
     updates: (): Button<Child, Attribute> => WidgetContainer(Updates()),
+    submap: (): Button<Child, Attribute> => WidgetContainer(Submap()),
     weather: (): Button<Child, Attribute> => WidgetContainer(Weather()),
     power: (): Button<Child, Attribute> => WidgetContainer(Power()),
 };
@@ -267,7 +271,9 @@ export const Bar = (() => {
             child: Widget.Box({
                 class_name: 'bar-panel-container',
                 child: Widget.CenterBox({
-                    class_name: 'bar-panel',
+                    class_name: borderLocation
+                        .bind('value')
+                        .as((brdrLcn) => (brdrLcn !== 'none' ? 'bar-panel withBorder' : 'bar-panel')),
                     css: 'padding: 1px',
                     startWidget: Widget.Box({
                         class_name: 'box-left',

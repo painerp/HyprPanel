@@ -14,6 +14,20 @@ showTime.connect('changed', () => {
     }
 });
 
+const { label, icon } = options.bar.windowtitle;
+
+label.connect('changed', () => {
+    if (!label.value && !icon.value) {
+        icon.value = true;
+    }
+});
+
+icon.connect('changed', () => {
+    if (!label.value && !icon.value) {
+        label.value = true;
+    }
+});
+
 const { output, input } = options.bar.volume;
 
 output.connect('changed', () => {

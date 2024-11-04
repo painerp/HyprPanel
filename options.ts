@@ -1,26 +1,23 @@
 import { opt, mkOptions } from 'lib/option';
-import {
-    NetstatIcon,
-    NetstatLabelType,
-    PowerIcon,
-    RateUnit,
-    ResourceLabelType,
-    StorageIcon,
-    UpdatesIcon,
-} from 'lib/types/bar';
-import { KbIcon, KbLabelType } from 'lib/types/customModules/kbLayout';
+import { NetstatLabelType, RateUnit, ResourceLabelType } from 'lib/types/bar';
+import { KbLabelType } from 'lib/types/customModules/kbLayout';
 import {
     ActiveWsIndicator,
     BarButtonStyles,
     BarLocation,
+    BluetoothBatteryState,
+    BorderLocation,
     NotificationAnchor,
     OSDAnchor,
     OSDOrientation,
+    ScalingPriority,
     WindowLayer,
 } from 'lib/types/options';
 import { MatugenScheme, MatugenTheme, MatugenVariations } from 'lib/types/options';
+import { SystrayIconMap } from 'lib/types/systray';
 import { UnitType } from 'lib/types/weather';
-import { WorkspaceIcons, WorkspaceIconsColored } from 'lib/types/workspace';
+import { Transition } from 'lib/types/widget';
+import { ApplicationIcons, WorkspaceIcons, WorkspaceIconsColored } from 'lib/types/workspace';
 
 // WARN: CHANGING THESE VALUES WILL PREVENT MATUGEN COLOR GENERATION FOR THE CHANGED VALUE
 export const colors = {
@@ -93,6 +90,9 @@ const tertiary_colors = {
 
 const options = mkOptions(OPTIONS, {
     theme: {
+        tooltip: {
+            scaling: opt(100),
+        },
         matugen: opt(false),
         matugen_settings: {
             mode: opt<MatugenTheme>('dark'),
@@ -159,8 +159,15 @@ const options = mkOptions(OPTIONS, {
             transparent: opt(false),
             dropdownGap: opt('2.9em'),
             background: opt(colors.crust),
+            border: {
+                location: opt<BorderLocation>('none'),
+                width: opt('0.15em'),
+                color: opt(colors.lavender),
+            },
             buttons: {
                 style: opt<BarButtonStyles>('default'),
+                enableBorders: opt(false),
+                borderSize: opt('0.1em'),
                 monochrome: opt(false),
                 spacing: opt('0.25em'),
                 padding_x: opt('0.7rem'),
@@ -177,16 +184,20 @@ const options = mkOptions(OPTIONS, {
                 icon: opt(colors.lavender),
                 dashboard: {
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
+                    enableBorder: opt(false),
+                    border: opt(colors.yellow),
                     icon: opt(colors.yellow),
                     spacing: opt('0.5em'),
                 },
                 workspaces: {
                     background: opt(colors.base2),
-                    hover: opt(colors.pink),
+                    enableBorder: opt(false),
+                    smartHighlight: opt(true),
+                    border: opt(colors.pink),
                     available: opt(colors.sky),
                     occupied: opt(colors.flamingo),
                     active: opt(colors.pink),
+                    hover: opt(colors.pink),
                     numbered_active_highlight_border: opt('0.2em'),
                     numbered_active_highlight_padding: opt('0.2em'),
                     numbered_active_highlighted_text_color: opt(colors.mantle),
@@ -196,23 +207,26 @@ const options = mkOptions(OPTIONS, {
                 },
                 windowtitle: {
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
+                    enableBorder: opt(false),
+                    border: opt(colors.pink),
                     text: opt(colors.pink),
                     icon: opt(colors.pink),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 media: {
+                    enableBorder: opt(false),
+                    border: opt(colors.lavender),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     text: opt(colors.lavender),
                     icon: opt(colors.lavender),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 volume: {
+                    enableBorder: opt(false),
+                    border: opt(colors.maroon),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     output_text: opt(colors.maroon),
                     output_icon: opt(colors.maroon),
                     input_text: opt(colors.maroon),
@@ -222,45 +236,52 @@ const options = mkOptions(OPTIONS, {
                     spacing: opt('0.5em'),
                 },
                 network: {
+                    enableBorder: opt(false),
+                    border: opt(colors.mauve),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     text: opt(colors.mauve),
                     icon: opt(colors.mauve),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 bluetooth: {
+                    enableBorder: opt(false),
+                    border: opt(colors.sky),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     text: opt(colors.sky),
                     icon: opt(colors.sky),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 systray: {
+                    enableBorder: opt(false),
+                    customIcon: opt(colors.text),
+                    border: opt(colors.lavender),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     spacing: opt('0.5em'),
                 },
                 battery: {
+                    enableBorder: opt(false),
+                    border: opt(colors.yellow),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     text: opt(colors.yellow),
                     icon: opt(colors.yellow),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 clock: {
+                    enableBorder: opt(false),
+                    border: opt(colors.pink),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     text: opt(colors.pink),
                     icon: opt(colors.pink),
                     icon_background: opt(colors.base2),
                     spacing: opt('0.5em'),
                 },
                 notifications: {
+                    enableBorder: opt(false),
+                    border: opt(colors.lavender),
                     background: opt(colors.base2),
-                    hover: opt(colors.surface1),
                     icon: opt(colors.lavender),
                     icon_background: opt(colors.base2),
                     total: opt(colors.lavender),
@@ -268,6 +289,8 @@ const options = mkOptions(OPTIONS, {
                 },
                 modules: {
                     ram: {
+                        enableBorder: opt(false),
+                        border: opt(colors.yellow),
                         background: opt(colors.base2),
                         text: opt(colors.yellow),
                         icon: opt(colors.yellow),
@@ -275,6 +298,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     cpu: {
+                        enableBorder: opt(false),
+                        border: opt(colors.red),
                         background: opt(colors.base2),
                         text: opt(colors.red),
                         icon: opt(colors.red),
@@ -282,6 +307,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.5em'),
                     },
                     storage: {
+                        enableBorder: opt(false),
+                        border: opt(colors.pink),
                         background: opt(colors.base2),
                         text: opt(colors.pink),
                         icon: opt(colors.pink),
@@ -289,6 +316,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     netstat: {
+                        enableBorder: opt(false),
+                        border: opt(colors.green),
                         background: opt(colors.base2),
                         text: opt(colors.green),
                         icon: opt(colors.green),
@@ -296,6 +325,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     kbLayout: {
+                        enableBorder: opt(false),
+                        border: opt(colors.sky),
                         background: opt(colors.base2),
                         text: opt(colors.sky),
                         icon: opt(colors.sky),
@@ -303,6 +334,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     updates: {
+                        enableBorder: opt(false),
+                        border: opt(colors.mauve),
                         background: opt(colors.base2),
                         text: opt(colors.mauve),
                         icon: opt(colors.mauve),
@@ -310,6 +343,8 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     weather: {
+                        enableBorder: opt(false),
+                        border: opt(colors.lavender),
                         background: opt(colors.base2),
                         text: opt(colors.lavender),
                         icon: opt(colors.lavender),
@@ -317,8 +352,19 @@ const options = mkOptions(OPTIONS, {
                         spacing: opt('0.45em'),
                     },
                     power: {
+                        enableBorder: opt(false),
+                        border: opt(colors.red),
                         background: opt(colors.base2),
                         icon: opt(colors.red),
+                        icon_background: opt(colors.base2),
+                        spacing: opt('0.45em'),
+                    },
+                    submap: {
+                        enableBorder: opt(false),
+                        border: opt(colors.teal),
+                        background: opt(colors.base2),
+                        text: opt(colors.teal),
+                        icon: opt(colors.teal),
                         icon_background: opt(colors.base2),
                         spacing: opt('0.45em'),
                     },
@@ -356,6 +402,8 @@ const options = mkOptions(OPTIONS, {
                     enabled: opt(colors.lavender),
                     disabled: opt(tertiary_colors.surface0),
                     puck: opt(secondary_colors.surface1),
+                    radius: opt('0.2em'),
+                    slider_radius: opt('0.2em'),
                 },
                 check_radio_button: {
                     background: opt(colors.surface1),
@@ -380,6 +428,8 @@ const options = mkOptions(OPTIONS, {
                     background: opt(tertiary_colors.surface2),
                     backgroundhover: opt(colors.surface1),
                     puck: opt(colors.overlay0),
+                    slider_radius: opt('0.3rem'),
+                    progress_radius: opt('0.3rem'),
                 },
                 dropdownmenu: {
                     background: opt(colors.crust),
@@ -488,6 +538,11 @@ const options = mkOptions(OPTIONS, {
                         iconbuttons: {
                             passive: opt(colors.text),
                             active: opt(colors.mauve),
+                        },
+                        switch: {
+                            enabled: opt(colors.mauve),
+                            disabled: opt(tertiary_colors.surface0),
+                            puck: opt(secondary_colors.surface1),
                         },
                     },
                     bluetooth: {
@@ -783,6 +838,7 @@ const options = mkOptions(OPTIONS, {
     },
 
     bar: {
+        scrollSpeed: opt(5),
         layouts: opt({
             '1': {
                 left: ['dashboard', 'workspaces', 'windowtitle'],
@@ -802,6 +858,10 @@ const options = mkOptions(OPTIONS, {
         }),
         launcher: {
             icon: opt('󰣇'),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         windowtitle: {
             custom_title: opt(true),
@@ -811,11 +871,23 @@ const options = mkOptions(OPTIONS, {
             icon: opt(true),
             truncation: opt(true),
             truncation_size: opt(50),
+            leftClick: opt(''),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         workspaces: {
             show_icons: opt(false),
+            showAllActive: opt(true),
+            ignored: opt(''),
             show_numbered: opt(false),
             showWsIcons: opt(false),
+            showApplicationIcons: opt(false),
+            applicationIconOncePerWorkspace: opt(true),
+            applicationIconMap: opt<ApplicationIcons>({}),
+            applicationIconFallback: opt('󰣆'),
+            applicationIconEmptyWorkspace: opt(''),
             numbered_active_indicator: opt<ActiveWsIndicator>('underline'),
             icons: {
                 available: opt(''),
@@ -826,7 +898,7 @@ const options = mkOptions(OPTIONS, {
             workspaces: opt(10),
             spacing: opt(1),
             monitorSpecific: opt(true),
-            hideUnoccupied: opt(false),
+            hideUnoccupied: opt(true),
             workspaceMask: opt(false),
             reverse_scroll: opt(false),
             scroll_speed: opt(5),
@@ -836,40 +908,71 @@ const options = mkOptions(OPTIONS, {
             output: opt(true),
             input: opt(false),
             hide_muted_label: opt(false),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt('pactl set-sink-volume @DEFAULT_SINK@ +5%'),
+            scrollDown: opt('pactl set-sink-volume @DEFAULT_SINK@ -5%'),
         },
         network: {
             truncation: opt(true),
+            showWifiInfo: opt(false),
             truncation_size: opt(7),
             label: opt(true),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         bluetooth: {
             label: opt(true),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         battery: {
             label: opt(true),
+            hideLabelWhenFull: opt(false),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         systray: {
             ignore: opt<string[]>([]),
+            customIcons: opt<SystrayIconMap>({}),
         },
         clock: {
             icon: opt('󰸗'),
             showIcon: opt(true),
             showTime: opt(true),
             format: opt('%a %b %d  %I:%M:%S %p'),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         media: {
-            show_artist: opt(false),
+            format: opt('{artist: - }{title}'),
             truncation: opt(true),
             show_label: opt(true),
             truncation_size: opt(30),
             show_active_only: opt(false),
+            rightClick: opt(''),
+            middleClick: opt(''),
         },
         notifications: {
             show_total: opt(false),
+            hideCountWhenZero: opt(false),
+            rightClick: opt(''),
+            middleClick: opt(''),
+            scrollUp: opt(''),
+            scrollDown: opt(''),
         },
         customModules: {
             scrollSpeed: opt(5),
             ram: {
+                icon: opt(''),
                 label: opt(true),
                 labelType: opt<ResourceLabelType>('percentage'),
                 round: opt(true),
@@ -879,6 +982,7 @@ const options = mkOptions(OPTIONS, {
                 middleClick: opt(''),
             },
             cpu: {
+                icon: opt(''),
                 label: opt(true),
                 round: opt(true),
                 pollingInterval: opt(2000),
@@ -890,7 +994,7 @@ const options = mkOptions(OPTIONS, {
             },
             storage: {
                 label: opt(true),
-                icon: opt<StorageIcon>('󰋊'),
+                icon: opt('󰋊'),
                 round: opt(false),
                 labelType: opt<ResourceLabelType>('percentage'),
                 pollingInterval: opt(2000),
@@ -901,7 +1005,8 @@ const options = mkOptions(OPTIONS, {
             netstat: {
                 label: opt(true),
                 networkInterface: opt(''),
-                icon: opt<NetstatIcon>('󰖟'),
+                dynamicIcon: opt(false),
+                icon: opt('󰖟'),
                 round: opt(true),
                 labelType: opt<NetstatLabelType>('full'),
                 rateUnit: opt<RateUnit>('auto'),
@@ -913,7 +1018,7 @@ const options = mkOptions(OPTIONS, {
             kbLayout: {
                 label: opt(true),
                 labelType: opt<KbLabelType>('code'),
-                icon: opt<KbIcon>('󰌌'),
+                icon: opt('󰌌'),
                 leftClick: opt(''),
                 rightClick: opt(''),
                 middleClick: opt(''),
@@ -924,8 +1029,21 @@ const options = mkOptions(OPTIONS, {
                 updateCommand: opt('$HOME/.config/ags/scripts/checkUpdates.sh -arch'),
                 label: opt(true),
                 padZero: opt(true),
-                icon: opt<UpdatesIcon>('󰏖'),
+                icon: opt('󰏖'),
                 pollingInterval: opt(1000 * 60 * 60 * 6),
+                leftClick: opt(''),
+                rightClick: opt(''),
+                middleClick: opt(''),
+                scrollUp: opt(''),
+                scrollDown: opt(''),
+            },
+            submap: {
+                label: opt(true),
+                showSubmapName: opt(true),
+                enabledIcon: opt('󰌐'),
+                disabledIcon: opt('󰌌'),
+                enabledText: opt('Submap On'),
+                disabledText: opt('Submap off'),
                 leftClick: opt(''),
                 rightClick: opt(''),
                 middleClick: opt(''),
@@ -942,7 +1060,7 @@ const options = mkOptions(OPTIONS, {
                 scrollDown: opt(''),
             },
             power: {
-                icon: opt<PowerIcon>(''),
+                icon: opt(''),
                 showLabel: opt(true),
                 leftClick: opt('menu:powerdropdown'),
                 rightClick: opt(''),
@@ -954,30 +1072,50 @@ const options = mkOptions(OPTIONS, {
     },
 
     menus: {
+        transition: opt<Transition>('crossfade'),
+        transitionTime: opt(200),
+        media: {
+            hideAuthor: opt(false),
+            hideAlbum: opt(false),
+        },
+        bluetooth: {
+            showBattery: opt(false),
+            batteryState: opt<BluetoothBatteryState>('connected'),
+            batteryIcon: opt('󰥉'),
+        },
+        volume: {
+            raiseMaximumVolume: opt(false),
+        },
         power: {
             showLabel: opt(true),
             confirmation: opt(true),
             sleep: opt('systemctl suspend'),
             reboot: opt('systemctl reboot'),
-            logout: opt('pkill Hyprland'),
-            shutdown: opt('shutdown now'),
+            logout: opt('hyprctl dispatch exit'),
+            shutdown: opt('systemctl poweroff'),
         },
         dashboard: {
             powermenu: {
                 confirmation: opt(true),
                 sleep: opt('systemctl suspend'),
                 reboot: opt('systemctl reboot'),
-                logout: opt('pkill Hyprland'),
-                shutdown: opt('shutdown now'),
+                logout: opt('hyprctl dispatch exit'),
+                shutdown: opt('systemctl poweroff'),
                 avatar: {
-                    image: opt('avatar-default-symbolic'),
+                    image: opt('$HOME/.face.icon'),
                     name: opt<'system' | string>('system'),
                 },
             },
             stats: {
+                enabled: opt(true),
+                interval: opt(2000),
                 enable_gpu: opt(false),
             },
+            controls: {
+                enabled: opt(true),
+            },
             shortcuts: {
+                enabled: opt(true),
                 left: {
                     shortcut1: {
                         icon: opt('󰇩'),
@@ -1014,32 +1152,33 @@ const options = mkOptions(OPTIONS, {
                 },
             },
             directories: {
+                enabled: opt(true),
                 left: {
                     directory1: {
                         label: opt('󰉍 Downloads'),
-                        command: opt('bash -c "dolphin $HOME/Downloads/"'),
+                        command: opt('bash -c "xdg-open $HOME/Downloads/"'),
                     },
                     directory2: {
                         label: opt('󰉏 Videos'),
-                        command: opt('bash -c "dolphin $HOME/Videos/"'),
+                        command: opt('bash -c "xdg-open $HOME/Videos/"'),
                     },
                     directory3: {
                         label: opt('󰚝 Projects'),
-                        command: opt('bash -c "dolphin $HOME/Projects/"'),
+                        command: opt('bash -c "xdg-open $HOME/Projects/"'),
                     },
                 },
                 right: {
                     directory1: {
                         label: opt('󱧶 Documents'),
-                        command: opt('bash -c "dolphin $HOME/Documents/"'),
+                        command: opt('bash -c "xdg-open $HOME/Documents/"'),
                     },
                     directory2: {
                         label: opt('󰉏 Pictures'),
-                        command: opt('bash -c "dolphin $HOME/Pictures/"'),
+                        command: opt('bash -c "xdg-open $HOME/Pictures/"'),
                     },
                     directory3: {
                         label: opt('󱂵 Home'),
-                        command: opt('bash -c "dolphin $HOME/"'),
+                        command: opt('bash -c "xdg-open $HOME/"'),
                     },
                 },
             },
@@ -1047,8 +1186,10 @@ const options = mkOptions(OPTIONS, {
         clock: {
             time: {
                 military: opt(false),
+                hideSeconds: opt(false),
             },
             weather: {
+                enabled: opt(true),
                 interval: opt(60000),
                 unit: opt<UnitType>('imperial'),
                 location: opt('Los Angeles'),
@@ -1059,8 +1200,9 @@ const options = mkOptions(OPTIONS, {
         },
     },
 
-    terminal: opt('kitty'),
+    scalingPriority: opt<ScalingPriority>('gdk'),
 
+    terminal: opt('$TERM'),
     tear: opt(false),
 
     wallpaper: {
@@ -1077,6 +1219,7 @@ const options = mkOptions(OPTIONS, {
         active_monitor: opt(true),
         timeout: opt(7000),
         cache_actions: opt(true),
+        clearDelay: opt(100),
     },
 
     dummy: opt(true),
