@@ -62,8 +62,8 @@ const Volume = (): BarBoxChild => {
             hexpand: true,
             vexpand: true,
             tooltip_text: Utils.merge(
-                [audio.speaker.bind('description'), getIcon()],
-                (desc, icon) => ` ${icon} ${desc}`,
+                [audio.speaker.bind('description'), audio.speaker.bind('volume'), audio.speaker.bind('is_muted')],
+                (desc, vol, mut) => ` ${getIcon(outputIcons, vol, mut !== false)} ${desc}`,
             ),
             className: Utils.merge([button_style.bind('value'), label.bind('value')], (style, showLabel) => {
                 const styleMap = {
