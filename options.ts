@@ -4,6 +4,7 @@ import { KbLabelType } from 'lib/types/customModules/kbLayout';
 import {
     ActiveWsIndicator,
     BarButtonStyles,
+    BarLayout,
     BarLocation,
     BluetoothBatteryState,
     BorderLocation,
@@ -168,12 +169,14 @@ const options = mkOptions(OPTIONS, {
                 style: opt<BarButtonStyles>('default'),
                 enableBorders: opt(false),
                 borderSize: opt('0.1em'),
+                borderColor: opt(colors.lavender),
                 monochrome: opt(false),
                 spacing: opt('0.25em'),
                 padding_x: opt('0.7rem'),
                 padding_y: opt('0.2rem'),
                 y_margins: opt('0.4em'),
                 radius: opt('0.3em'),
+                innerRadiusMultiplier: opt('0.4'),
                 opacity: opt(100),
                 background_opacity: opt(100),
                 background_hover_opacity: opt(100),
@@ -306,6 +309,15 @@ const options = mkOptions(OPTIONS, {
                         icon_background: opt(colors.base2),
                         spacing: opt('0.5em'),
                     },
+                    cpuTemp: {
+                        enableBorder: opt(false),
+                        border: opt(colors.peach),
+                        background: opt(colors.base2),
+                        text: opt(colors.peach),
+                        icon: opt(colors.peach),
+                        icon_background: opt(colors.base2),
+                        spacing: opt('0.5em'),
+                    },
                     storage: {
                         enableBorder: opt(false),
                         border: opt(colors.pink),
@@ -368,6 +380,24 @@ const options = mkOptions(OPTIONS, {
                         icon_background: opt(colors.base2),
                         spacing: opt('0.45em'),
                     },
+                    hyprsunset: {
+                        enableBorder: opt(false),
+                        border: opt(colors.peach),
+                        background: opt(colors.base2),
+                        text: opt(colors.peach),
+                        icon: opt(colors.peach),
+                        icon_background: opt(colors.base2),
+                        spacing: opt('0.45em'),
+                    },
+                    hypridle: {
+                        enableBorder: opt(false),
+                        border: opt(colors.pink),
+                        background: opt(colors.base2),
+                        text: opt(colors.pink),
+                        icon: opt(colors.pink),
+                        icon_background: opt(colors.base2),
+                        spacing: opt('0.45em'),
+                    },
                 },
             },
             menus: {
@@ -386,6 +416,8 @@ const options = mkOptions(OPTIONS, {
                 feinttext: opt(colors.surface0),
                 label: opt(colors.lavender),
                 popover: {
+                    scaling: opt(100),
+                    radius: opt('0.4em'),
                     text: opt(colors.lavender),
                     background: opt(secondary_colors.mantle),
                     border: opt(secondary_colors.mantle),
@@ -414,6 +446,7 @@ const options = mkOptions(OPTIONS, {
                     active: opt(secondary_colors.pink),
                     disabled: opt(tertiary_colors.surface2),
                     text: opt(secondary_colors.mantle),
+                    radius: opt('0.4em'),
                 },
                 iconbuttons: {
                     passive: opt(secondary_colors.text),
@@ -422,6 +455,7 @@ const options = mkOptions(OPTIONS, {
                 progressbar: {
                     foreground: opt(colors.lavender),
                     background: opt(colors.surface1),
+                    radius: opt('0.3rem'),
                 },
                 slider: {
                     primary: opt(colors.lavender),
@@ -437,6 +471,7 @@ const options = mkOptions(OPTIONS, {
                     divider: opt(colors.base),
                 },
                 tooltip: {
+                    radius: opt('0.3em'),
                     background: opt(colors.crust),
                     text: opt(tertiary_colors.lavender),
                 },
@@ -446,6 +481,7 @@ const options = mkOptions(OPTIONS, {
                         song: opt(tertiary_colors.lavender),
                         artist: opt(tertiary_colors.teal),
                         album: opt(tertiary_colors.pink),
+                        timestamp: opt(colors.text),
                         background: {
                             color: opt(colors.crust),
                         },
@@ -839,7 +875,7 @@ const options = mkOptions(OPTIONS, {
 
     bar: {
         scrollSpeed: opt(5),
-        layouts: opt({
+        layouts: opt<BarLayout>({
             '1': {
                 left: ['dashboard', 'workspaces', 'windowtitle'],
                 middle: ['media'],
@@ -858,6 +894,7 @@ const options = mkOptions(OPTIONS, {
         }),
         launcher: {
             icon: opt('󰣇'),
+            autoDetectIcon: opt(false),
             rightClick: opt(''),
             middleClick: opt(''),
             scrollUp: opt(''),
@@ -895,7 +932,7 @@ const options = mkOptions(OPTIONS, {
                 occupied: opt(''),
             },
             workspaceIconMap: opt<WorkspaceIcons | WorkspaceIconsColored>({}),
-            workspaces: opt(10),
+            workspaces: opt(5),
             spacing: opt(1),
             monitorSpecific: opt(true),
             hideUnoccupied: opt(true),
@@ -992,6 +1029,20 @@ const options = mkOptions(OPTIONS, {
                 scrollUp: opt(''),
                 scrollDown: opt(''),
             },
+            cpuTemp: {
+                icon: opt(''),
+                sensor: opt(''),
+                label: opt(true),
+                round: opt(true),
+                showUnit: opt(true),
+                unit: opt<UnitType>('metric'),
+                pollingInterval: opt(2000),
+                leftClick: opt(''),
+                rightClick: opt(''),
+                middleClick: opt(''),
+                scrollUp: opt(''),
+                scrollDown: opt(''),
+            },
             storage: {
                 label: opt(true),
                 icon: opt('󰋊'),
@@ -1068,6 +1119,31 @@ const options = mkOptions(OPTIONS, {
                 scrollUp: opt(''),
                 scrollDown: opt(''),
             },
+            hyprsunset: {
+                temperature: opt('6000k'),
+                label: opt(true),
+                onIcon: opt('󱩌'),
+                offIcon: opt('󰛨'),
+                onLabel: opt('On'),
+                offLabel: opt('Off'),
+                pollingInterval: opt(1000 * 2),
+                rightClick: opt(''),
+                middleClick: opt(''),
+                scrollUp: opt(''),
+                scrollDown: opt(''),
+            },
+            hypridle: {
+                label: opt(true),
+                onIcon: opt(''),
+                offIcon: opt(''),
+                onLabel: opt('On'),
+                offLabel: opt('Off'),
+                pollingInterval: opt(1000 * 2),
+                rightClick: opt(''),
+                middleClick: opt(''),
+                scrollUp: opt(''),
+                scrollDown: opt(''),
+            },
         },
     },
 
@@ -1077,6 +1153,9 @@ const options = mkOptions(OPTIONS, {
         media: {
             hideAuthor: opt(false),
             hideAlbum: opt(false),
+            displayTime: opt(false),
+            displayTimeTooltip: opt(false),
+            noMediaText: opt('No Media Currently Playing'),
         },
         bluetooth: {
             showBattery: opt(false),
@@ -1087,6 +1166,12 @@ const options = mkOptions(OPTIONS, {
             raiseMaximumVolume: opt(false),
         },
         power: {
+            lowBatteryNotification: opt(false),
+            lowBatteryThreshold: opt(20),
+            lowBatteryNotificationTitle: opt('Warning: Low battery'),
+            lowBatteryNotificationText: opt(
+                'Your battery is running low ($POWER_LEVEL %).\n\nPlease plug in your charger.',
+            ),
             showLabel: opt(true),
             confirmation: opt(true),
             sleep: opt('systemctl suspend'),
@@ -1217,9 +1302,15 @@ const options = mkOptions(OPTIONS, {
         displayedTotal: opt(10),
         monitor: opt(0),
         active_monitor: opt(true),
+        showActionsOnHover: opt(false),
         timeout: opt(7000),
         cache_actions: opt(true),
         clearDelay: opt(100),
+    },
+
+    hyprpanel: {
+        restartAgs: opt(true),
+        restartCommand: opt('ags -q; ags'),
     },
 
     dummy: opt(true),

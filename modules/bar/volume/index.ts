@@ -43,7 +43,6 @@ const Volume = (): BarBoxChild => {
 
     const volIcn = (volume: number, isMuted: boolean, icons: VolumeIcons, class_name: string): Label<never> => {
         return Widget.Label({
-            hexpand: true,
             class_name: `bar-button-icon volume txt-icon bar ${class_name}`,
             label: getIcon(icons, volume, isMuted),
         });
@@ -51,7 +50,6 @@ const Volume = (): BarBoxChild => {
 
     const volPct = (volume: number, isMuted: boolean, class_name: string): Label<never> => {
         return Widget.Label({
-            hexpand: true,
             class_name: `bar-button-label volume ${class_name}`,
             label: isMuted ? '0%' : `${Math.round(volume * 100)}%`,
         });
@@ -59,7 +57,6 @@ const Volume = (): BarBoxChild => {
 
     return {
         component: Widget.Box({
-            hexpand: true,
             vexpand: true,
             tooltip_text: Utils.merge(
                 [audio.speaker.bind('description'), audio.speaker.bind('volume'), audio.speaker.bind('is_muted')],

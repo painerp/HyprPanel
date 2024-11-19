@@ -87,6 +87,12 @@ gpu-screen-recorder
 ## To enable the eyedropper color picker with the default snapshot shortcut in the dashboard
 hyprpicker
 
+## To enable hyprland's very own blue light filter
+hyprsunset
+
+## To enable hyprland's very own idle inhibitor
+hypridle
+
 ## To click resource/stat bars in the dashboard and open btop
 btop
 
@@ -108,7 +114,7 @@ sudo pacman -S pipewire libgtop bluez bluez-utils btop networkmanager dart-sass 
 AUR:
 
 ```bash
-yay -S grimblast-git gpu-screen-recorder hyprpicker matugen-bin python-gpustat aylurs-gtk-shell-git
+yay -S grimblast-git gpu-screen-recorder hyprpicker matugen-bin python-gpustat aylurs-gtk-shell-git hyprsunset-git hypridle-git
 ```
 
 ### Fedora
