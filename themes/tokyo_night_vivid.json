@@ -215,8 +215,6 @@
   "theme.bar.buttons.network.icon": "#272a3d",
   "theme.bar.buttons.network.text": "#272a3d",
   "theme.bar.buttons.network.background": "#bb9af7",
-  "theme.bar.buttons.volume.icon": "#272a3d",
-  "theme.bar.buttons.volume.text": "#272a3d",
   "theme.bar.buttons.volume.background": "#f7768e",
   "theme.bar.buttons.windowtitle.icon": "#272a3d",
   "theme.bar.buttons.windowtitle.text": "#272a3d",
@@ -354,5 +352,10 @@
   "theme.bar.buttons.modules.hypridle.background": "#f7768e",
   "theme.bar.buttons.modules.hypridle.icon_background": "#f7768e",
   "theme.bar.buttons.modules.hypridle.text": "#272a3d",
-  "theme.bar.buttons.modules.hypridle.border": "#f7768e"
+  "theme.bar.buttons.modules.hypridle.border": "#f7768e",
+  "theme.bar.buttons.volume.output_icon": "#272a3d",
+  "theme.bar.buttons.volume.output_text": "#272a3d",
+  "theme.bar.buttons.volume.input_icon": "#272a3d",
+  "theme.bar.buttons.volume.input_text": "#272a3d",
+  "theme.bar.buttons.volume.separator": "#414868"
 }
