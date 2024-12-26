@@ -1,6 +1,11 @@
 .bar-button-label.clock {
     color: if($bar-buttons-monochrome, $bar-buttons-text, $bar-buttons-clock-text);
     margin-left: $bar-buttons-clock-spacing;
+
+    &.no-icon {
+        margin-left: 0;
+        padding-left: 0;
+    }
 }
 
 .bar-button-icon.clock {
