@@ -9,6 +9,12 @@
     margin-left: $bar-buttons-volume-spacing;
 }
 
+.bar-separator.volume {
+    color: if($bar-buttons-monochrome, $bar-buttons-text, $bar-buttons-hover);
+    margin-left: $bar-buttons-volume-spacing;
+    margin-right: $bar-buttons-volume-spacing;
+}
+
 .style2 {
     .bar-button-icon.volume {
         border-top-left-radius: $bar-buttons-radius;
@@ -32,9 +38,12 @@
 
     .bar-button-label.volume {
         padding: $bar-buttons-padding_y 0em;
-        padding-right: $bar-buttons-padding_x;
         padding-left: $bar-buttons-volume-spacing;
         margin-left: 0em;
+
+        &.no-separator {
+            padding-right: $bar-buttons-padding_x;
+        }
     }
     &.no-label.volume-container {
         .bar-button-icon.volume {

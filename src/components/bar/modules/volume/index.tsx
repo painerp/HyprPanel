@@ -5,19 +5,25 @@ import { runAsyncCommand, throttledScrollHandler } from 'src/components/bar/util
 import Variable from 'astal/variable.js';
 import { bind } from 'astal/binding.js';
 import { onMiddleClick, onPrimaryClick, onScroll, onSecondaryClick } from 'src/lib/shared/eventHandlers.js';
-import { getIcon } from './helpers/index.js';
+import { getIcon, inputIcons, outputIcons } from './helpers/index.js';
 import { BarBoxChild } from 'src/lib/types/bar.js';
 import { Astal } from 'astal/gtk3';
+import { VolumeIcons } from 'src/lib/types/volume';
 
 const { rightClick, middleClick, scrollUp, scrollDown } = options.bar.volume;
 
 const Volume = (): BarBoxChild => {
-    const volumeIcon = (isMuted: boolean, vol: number): JSX.Element => {
-        return <label className={'bar-button-icon volume txt-icon bar'} label={getIcon(isMuted, vol)} />;
+    const volumeIcon = (icons: VolumeIcons, vol: number, isMuted: boolean, extra_classes: string): JSX.Element => {
+        return (
+            <label
+                className={`bar-button-icon volume txt-icon bar ${extra_classes}`}
+                label={getIcon(icons, isMuted, vol)}
+            />
+        );
     };
 
-    const volumeLabel = (vol: number): JSX.Element => {
-        return <label className={'bar-button-label volume'} label={`${Math.round(vol * 100)}%`} />;
+    const volumeLabel = (vol: number, extra_classes: string): JSX.Element => {
+        return <label className={`bar-button-label volume ${extra_classes}`} label={`${Math.round(vol * 100)}%`} />;
     };
 
     const componentTooltip = Variable.derive(
@@ -27,7 +33,7 @@ const Volume = (): BarBoxChild => {
             bind(audioService.defaultSpeaker, 'mute'),
         ],
         (desc, vol, isMuted) => {
-            return `${getIcon(isMuted, vol)} ${desc}`;
+            return `${getIcon(outputIcons, isMuted, vol)} ${desc}`;
         },
     );
     const componentClassName = Variable.derive(
@@ -44,15 +50,48 @@ const Volume = (): BarBoxChild => {
     );
     const componentChildren = Variable.derive(
         [
-            bind(options.bar.volume.label),
             bind(audioService.defaultSpeaker, 'volume'),
             bind(audioService.defaultSpeaker, 'mute'),
+            bind(audioService.defaultMicrophone, 'volume'),
+            bind(audioService.defaultMicrophone, 'mute'),
+            bind(options.bar.volume.label),
+            bind(options.bar.volume.output),
+            bind(options.bar.volume.input),
+            bind(options.bar.volume.hideMutedLabel),
         ],
-        (showLabel, vol, isMuted) => {
-            if (showLabel) {
-                return [volumeIcon(isMuted, vol), volumeLabel(vol)];
+        (outputVolume, outputIsMuted, inputVolume, inputIsMuted, showLabel, showOutput, showInput, hideMutedLabel) => {
+            const children: JSX.Element[] = [];
+            if (showOutput) {
+                const isMuted: boolean = outputIsMuted !== false || Math.round(outputVolume * 100) === 0;
+                const labelVisible: boolean = showLabel && !(hideMutedLabel && isMuted);
+                children.push(
+                    volumeIcon(outputIcons, outputVolume, isMuted, `output ${!labelVisible ? 'no-label' : ''}`),
+                );
+                if (labelVisible) {
+                    children.push(volumeLabel(outputVolume, `output ${!showInput ? 'no-separator' : ''}`));
+                }
             }
-            return [volumeIcon(isMuted, vol)];
+
+            if (showInput) {
+                if (showOutput) {
+                    children.push(
+                        <box
+                            className={'bar-separator volume'}
+                            orientation={1}
+                            // label={getIcon(icons, isMuted, vol)}
+                        />,
+                    );
+                }
+                const isMuted: boolean = inputIsMuted !== false || Math.round(inputVolume * 100) === 0;
+                const labelVisible: boolean = showLabel && !(hideMutedLabel && isMuted);
+
+                children.push(volumeIcon(inputIcons, inputVolume, isMuted, `input ${!labelVisible ? 'no-label' : ''}`));
+
+                if (labelVisible) {
+                    children.push(volumeLabel(inputVolume, 'input no-separator'));
+                }
+            }
+            return children;
         },
     );
     const component = (

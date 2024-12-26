@@ -27,3 +27,17 @@ icon.subscribe(() => {
         label.set(true);
     }
 });
+
+const { input, output } = options.bar.volume;
+
+input.subscribe(() => {
+    if (!input.get() && !output.get()) {
+        output.set(true);
+    }
+});
+
+output.subscribe(() => {
+    if (!input.get() && !output.get()) {
+        input.set(true);
+    }
+});

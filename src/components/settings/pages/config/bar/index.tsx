@@ -331,7 +331,10 @@ export const BarSettings = (): JSX.Element => {
                 {/* Volume Section */}
                 <Header title="Volume" />
                 <Option opt={options.theme.bar.buttons.volume.enableBorder} title="Button Border" type="boolean" />
+                <Option opt={options.bar.volume.output} title="Show Output" type="boolean" />
+                <Option opt={options.bar.volume.input} title="Show Input" type="boolean" />
                 <Option opt={options.bar.volume.label} title="Show Volume Percentage" type="boolean" />
+                <Option opt={options.bar.volume.hideMutedLabel} title="Hide Muted Volume Percentage" type="boolean" />
                 <Option
                     opt={options.theme.bar.buttons.volume.spacing}
                     title="Inner Spacing"

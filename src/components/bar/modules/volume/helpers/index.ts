@@ -1,11 +1,17 @@
 import { VolumeIcons } from 'src/lib/types/volume';
 
-const icons: VolumeIcons = {
-    101: '󰕾',
+export const outputIcons: VolumeIcons = {
+    101: '󱄠',
     66: '󰕾',
     34: '󰖀',
     1: '󰕿',
     0: '󰝟',
+};
+
+export const inputIcons: VolumeIcons = {
+    51: '󰍬',
+    1: '󰍮',
+    0: '󰍭',
 };
 
 /**
@@ -14,19 +20,15 @@ const icons: VolumeIcons = {
  * This function returns the corresponding volume icon based on the provided volume level and mute status.
  * It uses predefined mappings for volume icons.
  *
+ * @param icons Array of icons.
  * @param isMuted A boolean indicating whether the volume is muted.
  * @param vol The current volume level as a number between 0 and 1.
  *
  * @returns The corresponding volume icon as a string.
  */
-export const getIcon = (isMuted: boolean, vol: number): string => {
+export const getIcon = (icons: VolumeIcons, isMuted: boolean, vol: number): string => {
     if (isMuted) return icons[0];
-
-    const foundVol = [101, 66, 34, 1, 0].find((threshold) => threshold <= vol * 100);
-
-    if (foundVol !== undefined) {
-        return icons[foundVol];
-    }
-
-    return icons[101];
+    const keys: number[] = Object.keys(icons).map(Number).reverse();
+    const icon: number = keys.find((threshold) => threshold <= Math.round(vol * 100)) ?? keys[0];
+    return icons[icon];
 };

@@ -959,6 +959,9 @@ const options = mkOptions(CONFIG, {
         },
         volume: {
             label: opt(true),
+            output: opt(true),
+            input: opt(false),
+            hideMutedLabel: opt(false),
             rightClick: opt(''),
             middleClick: opt(''),
             scrollUp: opt('hyprpanel vol +5'),
