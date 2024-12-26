@@ -37,12 +37,10 @@
           astal.packages.${system}.notifd
           astal.packages.${system}.powerprofiles
           astal.packages.${system}.wireplumber
-          pkgs.fish
           pkgs.typescript
           pkgs.libnotify
           pkgs.dart-sass
           pkgs.fd
-          pkgs.btop
           pkgs.bluez
           pkgs.libgtop
           pkgs.gobject-introspection
