@@ -60,10 +60,12 @@ const ClientTitle = (): BarBoxChild => {
                 children.push(
                     <label
                         className={`bar-button-label windowtitle ${showIcon ? '' : 'no-icon'}`}
-                        label={truncateTitle(
-                            getTitle(client, useCustomTitle, useClassName),
-                            truncate ? truncationSize : -1,
-                        )}
+                        label={
+                            truncateTitle(
+                                getTitle(client, useCustomTitle, useClassName),
+                                truncate ? truncationSize : -1,
+                            ) ?? ''
+                        }
                     />,
                 );
             }
