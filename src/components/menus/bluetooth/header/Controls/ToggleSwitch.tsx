@@ -11,11 +11,7 @@ Variable.derive([bind(bluetoothService, 'isPowered')], (isOn) => {
 
 const blockBluetooth = (block: boolean): void => {
     exec(
-        "rfkill | grep -i 'bluetooth' | grep -i 'hci' | awk '$4 == \"" +
-            (block ? 'unblocked' : 'blocked') +
-            '" {print $1}\' | xargs -I {} rfkill ' +
-            (block ? 'block' : 'unblock') +
-            ' {}',
+        `bash -c "rfkill | grep -i 'bluetooth' | grep -i 'hci' | awk '\\$4 == \\"${block ? 'unblocked' : 'blocked'}\\" {print \\$1}' | xargs -I {} rfkill ${block ? 'block' : 'unblock'} {}"`,
     );
 };
 
