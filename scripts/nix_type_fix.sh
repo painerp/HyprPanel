@@ -25,20 +25,3 @@ fi
 
 ln -s "$expected_subfolder" astal
 echo "Updated astal symlink to $expected_subfolder."
-
-# Update paths in tsconfig.json
-tsconfig_file="tsconfig.json"
-
-if [ ! -f "$tsconfig_file" ]; then
-    echo "Error: $tsconfig_file not found."
-    exit 1
-fi
-
-# Use `sed` to replace the paths in tsconfig.json
-sed -i \
-    -e "s|\"jsxImportSource\": \".*\"|\"jsxImportSource\": \"$expected_subfolder/gtk3\"|" \
-    -e "s|\"astal\": \[\".*\"\]|\"astal\": [\"$expected_subfolder\"]|" \
-    -e "s|\"astal/\*\": \[\".*\"\]|\"astal/*\": [\"$expected_subfolder/*\"]|" \
-    "$tsconfig_file"
-
-echo "Updated tsconfig.json with the new astal-gjs path: $expected_subfolder."
