@@ -1,17 +1,19 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    ags.url = "github:aylur/ags";
-    astal.url = "github:aylur/astal";
+
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, ags, astal }: let
-    systems = [
-      "x86_64-linux"
-      "x86_64-darwin"
-      "aarch64-darwin"
-      "aarch64-linux"
-    ];
+  outputs = {
+    self,
+    nixpkgs,
+    ags,
+  }: let
+    systems = ["x86_64-linux" "aarch64-linux"];
     forEachSystem = nixpkgs.lib.genAttrs systems;
   in {
     packages = forEachSystem (system: let
@@ -23,48 +25,48 @@
         name = "hyprpanel"; # name of executable
         entry = "app.ts";
 
-        # additional libraries and executables to add to gjs' runtime
-        extraPackages = [
-          ags.packages.${system}.agsFull
-          astal.packages.${system}.tray
-          astal.packages.${system}.hyprland
-          astal.packages.${system}.io
-          astal.packages.${system}.apps
-          astal.packages.${system}.battery
-          astal.packages.${system}.bluetooth
-          astal.packages.${system}.mpris
-          astal.packages.${system}.network
-          astal.packages.${system}.notifd
-          astal.packages.${system}.powerprofiles
-          astal.packages.${system}.wireplumber
-          pkgs.typescript
-          pkgs.libnotify
-          pkgs.dart-sass
-          pkgs.fd
-          pkgs.bluez
-          pkgs.libgtop
-          pkgs.gobject-introspection
-          pkgs.glib
-          pkgs.bluez-tools
-          pkgs.grimblast
-          pkgs.brightnessctl
-          pkgs.gnome-bluetooth
-          (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [
-            gpustat
-            dbus-python
-            pygobject3
-          ]))
-          pkgs.matugen
-          pkgs.hyprpicker
-          pkgs.hyprsunset
-          pkgs.hypridle
-          pkgs.wireplumber
-          pkgs.networkmanager
-          pkgs.upower
-          pkgs.gvfs
-          pkgs.swww
-          pkgs.pywal
-        ] ++ (nixpkgs.lib.optionals (system == "x86_64-linux") [pkgs.gpu-screen-recorder]);
+        extraPackages =
+          (with ags.packages.${system}; [
+            tray
+            hyprland
+            apps
+            battery
+            bluetooth
+            mpris
+            network
+            notifd
+            powerprofiles
+            wireplumber
+          ])
+          ++ (with pkgs; [
+            typescript
+            libnotify
+            dart-sass
+            fd
+            bluez
+            libgtop
+            gobject-introspection
+            glib
+            bluez-tools
+            grimblast
+            brightnessctl
+            (python3.withPackages (ps:
+              with ps; [
+                gpustat
+                dbus-python
+                pygobject3
+              ]))
+            matugen
+            hyprpicker
+            hyprsunset
+            wireplumber
+            networkmanager
+            upower
+            gvfs
+            swww
+            pywal
+          ])
+          ++ (nixpkgs.lib.optionals (system == "x86_64-linux") [pkgs.gpu-screen-recorder]);
       };
     });
 
@@ -74,7 +76,7 @@
         if [ "$#" -eq 0 ]; then
             exec ${self.packages.${final.stdenv.system}.default}/bin/hyprpanel
         else
-            exec ${astal.packages.${final.stdenv.system}.io}/bin/astal -i hyprpanel "$@"
+            exec ${ags.packages.${final.stdenv.system}.io}/bin/astal -i hyprpanel "$@"
         fi
       '';
     };
