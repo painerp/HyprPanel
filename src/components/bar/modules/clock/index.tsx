@@ -13,10 +13,10 @@ const { style } = options.theme.bar.buttons;
 const time = Variable.derive([systemTime, format], (c, f) => c.format(f) || '');
 
 const Clock = (): BarBoxChild => {
-    const clockTime = (extra_classes: string = ''): JSX.Element => (
+    const ClockTime = ({ extra_classes = '' }: { extra_classes: string }): JSX.Element => (
         <label className={`bar-button-label clock bar ${extra_classes}`} label={bind(time)} />
     );
-    const clockIcon = <label className={'bar-button-icon clock txt-icon bar'} label={bind(icon)} />;
+    const ClockIcon = (): JSX.Element => <label className={'bar-button-icon clock txt-icon bar'} label={bind(icon)} />;
 
     const componentClassName = Variable.derive(
         [bind(style), bind(showIcon), bind(showTime)],
@@ -33,11 +33,16 @@ const Clock = (): BarBoxChild => {
 
     const componentChildren = Variable.derive([bind(showIcon), bind(showTime)], (shIcn, shTm) => {
         if (shIcn && !shTm) {
-            return [clockIcon];
+            return <ClockIcon />;
         } else if (shTm && !shIcn) {
-            return [clockTime('no-icon')];
+            return <ClockTime extra_classes="no-icon" />;
         }
-        return [clockIcon, clockTime()];
+        return (
+            <box>
+                <ClockIcon />
+                <ClockTime extra_classes="" />
+            </box>
+        );
     });
 
     const component = (

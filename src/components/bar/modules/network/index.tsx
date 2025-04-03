@@ -1,4 +1,3 @@
-import { networkService } from 'src/lib/constants/services.js';
 import options from 'src/options';
 import { openMenu } from '../../utils/menu';
 import { runAsyncCommand, throttledScrollHandler } from 'src/components/bar/utils/helpers.js';
@@ -9,6 +8,7 @@ import AstalNetwork from 'gi://AstalNetwork?version=0.1';
 import { BarBoxChild } from 'src/lib/types/bar.js';
 import { formatWifiInfo, wiredIcon, wirelessIcon } from './helpers';
 
+const networkService = AstalNetwork.get_default();
 const { label, truncation, truncation_size, rightClick, middleClick, scrollDown, scrollUp, showWifiInfo } =
     options.bar.network;
 
@@ -16,40 +16,53 @@ const Network = (): BarBoxChild => {
     const iconBinding = Variable.derive(
         [bind(networkService, 'primary'), bind(wiredIcon), bind(wirelessIcon)],
         (primaryNetwork, wiredIcon, wifiIcon) => {
-            const isWired = primaryNetwork === AstalNetwork.Primary.WIRED;
-            const iconName = isWired ? wiredIcon : wifiIcon;
-
-            return iconName;
+            return primaryNetwork === AstalNetwork.Primary.WIRED ? wiredIcon : wifiIcon;
         },
     );
 
-    const networkIcon = <icon className={'bar-button-icon network-icon'} icon={iconBinding()} />;
+    const NetworkIcon = (): JSX.Element => <icon className={'bar-button-icon network-icon'} icon={iconBinding()} />;
 
     const networkLabel = Variable.derive(
         [
             bind(networkService, 'primary'),
-            bind(networkService, 'wifi'),
             bind(label),
             bind(truncation),
             bind(truncation_size),
             bind(showWifiInfo),
+
+            bind(networkService, 'state'),
+            bind(networkService, 'connectivity'),
+            ...(networkService.wifi ? [bind(networkService.wifi, 'enabled')] : []),
         ],
-        (primaryNetwork, networkWifi, showLabel, trunc, tSize, showWifiInfo) => {
+        (primaryNetwork, showLabel, trunc, tSize, showWifiInfo) => {
             if (!showLabel) {
                 return <box />;
             }
             if (primaryNetwork === AstalNetwork.Primary.WIRED) {
                 return <label className={'bar-button-label network-label'} label={'Wired'.substring(0, tSize)} />;
             }
-            return (
-                <label
-                    className={'bar-button-label network-label'}
-                    label={
-                        networkWifi?.ssid ? `${trunc ? networkWifi.ssid.substring(0, tSize) : networkWifi.ssid}` : '--'
-                    }
-                    tooltipText={showWifiInfo ? formatWifiInfo(networkWifi) : ''}
-                />
-            );
+            const networkWifi = networkService.wifi;
+            if (networkWifi != null) {
+                // Astal doesn't reset the wifi attributes on disconnect, only on a valid connection
+                // so we need to check if both the WiFi is enabled and if there is an active access
+                // point
+                if (!networkWifi.enabled) {
+                    return <label className={'bar-button-label network-label'} label="Off" />;
+                }
+
+                return (
+                    <label
+                        className={'bar-button-label network-label'}
+                        label={
+                            networkWifi.active_access_point
+                                ? `${trunc ? networkWifi.ssid.substring(0, tSize) : networkWifi.ssid}`
+                                : '--'
+                        }
+                        tooltipText={showWifiInfo && networkWifi.active_access_point ? formatWifiInfo(networkWifi) : ''}
+                    />
+                );
+            }
+            return <box />;
         },
     );
 
@@ -66,8 +79,6 @@ const Network = (): BarBoxChild => {
         },
     );
 
-    const componentChildren = [networkIcon, networkLabel()];
-
     const component = (
         <box
             vexpand
@@ -79,7 +90,8 @@ const Network = (): BarBoxChild => {
                 componentClassName.drop();
             }}
         >
-            {componentChildren}
+            <NetworkIcon />
+            {networkLabel()}
         </box>
     );
 

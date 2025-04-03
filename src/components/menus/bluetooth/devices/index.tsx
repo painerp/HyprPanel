@@ -1,10 +1,11 @@
-import Variable from 'astal/variable.js';
-import { bind } from 'astal/binding.js';
-import { bluetoothService } from 'src/lib/constants/services.js';
+import { bind, Variable } from 'astal';
 import { getAvailableBluetoothDevices, getConnectedBluetoothDevices } from './helpers.js';
 import { NoBluetoothDevices } from './NoBluetoothDevices.js';
 import { BluetoothDisabled } from './BluetoothDisabled.js';
 import { DeviceListItem } from './DeviceListItem.js';
+import AstalBluetooth from 'gi://AstalBluetooth?version=0.1';
+
+const bluetoothService = AstalBluetooth.get_default();
 
 export const BluetoothDevices = (): JSX.Element => {
     const deviceListBinding = Variable.derive(

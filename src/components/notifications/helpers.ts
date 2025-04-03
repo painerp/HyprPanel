@@ -1,10 +1,13 @@
 import { bind, timeout, Variable } from 'astal';
 import AstalNotifd from 'gi://AstalNotifd?version=0.1';
 import options from 'src/options';
-import { hyprlandService, notifdService } from 'src/lib/constants/services';
 import { isNotificationIgnored } from 'src/lib/shared/notifications';
+import AstalHyprland from 'gi://AstalHyprland?version=0.1';
 
-const { ignore, timeout: popupTimeout } = options.notifications;
+const notifdService = AstalNotifd.get_default();
+const hyprlandService = AstalHyprland.get_default();
+
+const { ignore, timeout: popupTimeout, autoDismiss } = options.notifications;
 
 /**
  * Checks if a notification has an image.
@@ -84,4 +87,10 @@ const dropNotificationPopup = (
     const undismissedNotifications = currentPopups.filter((popupNotif) => popupNotif.id !== notificationToDismiss.id);
 
     popupNotifications.set(undismissedNotifications);
+};
+
+export const trackAutoTimeout = (): void => {
+    autoDismiss.subscribe((shouldAutoDismiss) => {
+        notifdService.set_ignore_timeout(!shouldAutoDismiss);
+    });
 };

@@ -1,7 +1,9 @@
 import { bind, Variable } from 'astal';
 import { Gtk } from 'astal/gtk3';
-import { bluetoothService } from 'src/lib/constants/services';
+import AstalBluetooth from 'gi://AstalBluetooth?version=0.1';
 import { exec } from 'astal/process';
+
+const bluetoothService = AstalBluetooth.get_default();
 
 const isPowered = Variable(false);
 

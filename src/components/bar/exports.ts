@@ -11,6 +11,7 @@ import { Clock } from '../../components/bar/modules/clock/index';
 import { SysTray } from '../../components/bar/modules/systray/index';
 
 // Custom Modules
+import { Microphone } from '../../components/bar/modules/microphone/index';
 import { Ram } from '../../components/bar/modules/ram/index';
 import { Cpu } from '../../components/bar/modules/cpu/index';
 import { CpuTemp } from '../../components/bar/modules/cputemp/index';
@@ -23,6 +24,7 @@ import { Weather } from '../../components/bar/modules/weather/index';
 import { Power } from '../../components/bar/modules/power/index';
 import { Hyprsunset } from '../../components/bar/modules/hyprsunset/index';
 import { Hypridle } from '../../components/bar/modules/hypridle/index';
+import { Cava } from '../../components/bar/modules/cava/index';
 
 export {
     Menu,
@@ -38,6 +40,7 @@ export {
     SysTray,
 
     // Custom Modules
+    Microphone,
     Ram,
     Cpu,
     CpuTemp,
@@ -50,4 +53,5 @@ export {
     Power,
     Hyprsunset,
     Hypridle,
+    Cava,
 };

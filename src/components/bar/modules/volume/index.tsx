@@ -1,29 +1,31 @@
-import { audioService } from 'src/lib/constants/services.js';
 import { openMenu } from '../../utils/menu.js';
 import options from 'src/options';
 import { runAsyncCommand, throttledScrollHandler } from 'src/components/bar/utils/helpers.js';
-import Variable from 'astal/variable.js';
-import { bind } from 'astal/binding.js';
+import { bind, Variable } from 'astal';
 import { onMiddleClick, onPrimaryClick, onScroll, onSecondaryClick } from 'src/lib/shared/eventHandlers.js';
 import { getIcon, inputIcons, outputIcons } from './helpers/index.js';
 import { BarBoxChild } from 'src/lib/types/bar.js';
 import { Astal } from 'astal/gtk3';
 import { VolumeIcons } from 'src/lib/types/volume';
+import AstalWp from 'gi://AstalWp?version=0.1';
+
+const wireplumber = AstalWp.get_default() as AstalWp.Wp;
+const audioService = wireplumber?.audio;
 
 const { rightClick, middleClick, scrollUp, scrollDown } = options.bar.volume;
 
 const Volume = (): BarBoxChild => {
-    const volumeIcon = (icons: VolumeIcons, vol: number, isMuted: boolean, extra_classes: string): JSX.Element => {
+    const VolumeIcon = ({ icons, isMuted, volume, extra_classes }: VolumeIconProps): JSX.Element => {
         return (
             <label
                 className={`bar-button-icon volume txt-icon bar ${extra_classes}`}
-                label={getIcon(icons, isMuted, vol)}
+                label={getIcon(icons, isMuted, volume)}
             />
         );
     };
 
-    const volumeLabel = (vol: number, extra_classes: string): JSX.Element => {
-        return <label className={`bar-button-label volume ${extra_classes}`} label={`${Math.round(vol * 100)}%`} />;
+    const VolumeLabel = ({ volume, extra_classes }: VolumeLabelProps): JSX.Element => {
+        return <label className={`bar-button-label volume ${extra_classes}`} label={`${Math.round(volume * 100)}%`} />;
     };
 
     const componentTooltip = Variable.derive(
@@ -65,10 +67,20 @@ const Volume = (): BarBoxChild => {
                 const isMuted: boolean = outputIsMuted !== false || Math.round(outputVolume * 100) === 0;
                 const labelVisible: boolean = showLabel && !(hideMutedLabel && isMuted);
                 children.push(
-                    volumeIcon(outputIcons, outputVolume, isMuted, `output ${!labelVisible ? 'no-label' : ''}`),
+                    VolumeIcon({
+                        icons: outputIcons,
+                        volume: outputVolume,
+                        isMuted,
+                        extra_classes: `output ${!labelVisible ? 'no-label' : ''}`,
+                    }),
                 );
                 if (labelVisible) {
-                    children.push(volumeLabel(outputVolume, `output ${!showInput ? 'no-separator' : ''}`));
+                    children.push(
+                        VolumeLabel({
+                            volume: outputVolume,
+                            extra_classes: `output ${!showInput ? 'no-separator' : ''}`,
+                        }),
+                    );
                 }
             }
 
@@ -85,10 +97,17 @@ const Volume = (): BarBoxChild => {
                 const isMuted: boolean = inputIsMuted !== false || Math.round(inputVolume * 100) === 0;
                 const labelVisible: boolean = showLabel && !(hideMutedLabel && isMuted);
 
-                children.push(volumeIcon(inputIcons, inputVolume, isMuted, `input ${!labelVisible ? 'no-label' : ''}`));
+                children.push(
+                    VolumeIcon({
+                        icons: inputIcons,
+                        volume: inputVolume,
+                        isMuted,
+                        extra_classes: `input ${!labelVisible ? 'no-label' : ''}`,
+                    }),
+                );
 
                 if (labelVisible) {
-                    children.push(volumeLabel(inputVolume, 'input no-separator'));
+                    children.push(VolumeLabel({ volume: inputVolume, extra_classes: 'input no-separator' }));
                 }
             }
             return children;
@@ -156,5 +175,17 @@ const Volume = (): BarBoxChild => {
         },
     };
 };
+
+interface VolumeIconProps {
+    icons: VolumeIcons;
+    isMuted: boolean;
+    volume: number;
+    extra_classes: string;
+}
+
+interface VolumeLabelProps {
+    volume: number;
+    extra_classes: string;
+}
 
 export { Volume };

@@ -1,13 +1,14 @@
-import { hyprlandService } from 'src/lib/constants/services.js';
 import options from 'src/options.js';
 import { getPosition } from 'src/lib/utils.js';
-import Variable from 'astal/variable.js';
-import { bind } from 'astal/binding.js';
-import { trackActiveMonitor, trackPopupNotifications } from './helpers.js';
+import { bind, Variable } from 'astal';
+import { trackActiveMonitor, trackAutoTimeout, trackPopupNotifications } from './helpers.js';
 import { Astal } from 'astal/gtk3';
 import { NotificationCard } from './Notification.js';
 import AstalNotifd from 'gi://AstalNotifd?version=0.1';
+import AstalHyprland from 'gi://AstalHyprland?version=0.1';
+import { GdkMonitorMapper } from '../bar/utils/GdkMonitorMapper';
 
+const hyprlandService = AstalHyprland.get_default();
 const { position, monitor, active_monitor, showActionsOnHover, displayedTotal } = options.notifications;
 const { tear } = options;
 
@@ -16,17 +17,25 @@ const popupNotifications: Variable<AstalNotifd.Notification[]> = Variable([]);
 
 trackActiveMonitor(curMonitor);
 trackPopupNotifications(popupNotifications);
+trackAutoTimeout();
 
 export default (): JSX.Element => {
+    const gdkMonitorMapper = new GdkMonitorMapper();
+
     const windowLayer = bind(tear).as((tear) => (tear ? Astal.Layer.TOP : Astal.Layer.OVERLAY));
     const windowAnchor = bind(position).as(getPosition);
     const windowMonitor = Variable.derive(
         [bind(hyprlandService, 'focusedMonitor'), bind(monitor), bind(active_monitor)],
         (focusedMonitor, monitor, activeMonitor) => {
+            gdkMonitorMapper.reset();
+
             if (activeMonitor === true) {
-                return focusedMonitor.id;
+                const gdkMonitor = gdkMonitorMapper.mapHyprlandToGdk(focusedMonitor.id);
+                return gdkMonitor;
             }
-            return monitor;
+
+            const gdkMonitor = gdkMonitorMapper.mapHyprlandToGdk(monitor);
+            return gdkMonitor;
         },
     );
 

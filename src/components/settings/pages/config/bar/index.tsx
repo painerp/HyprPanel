@@ -1,7 +1,7 @@
-import { Option } from 'src/components/settings/shared/Option';
 import { Header } from 'src/components/settings/shared/Header';
 import options from 'src/options';
 import { Gtk } from 'astal/gtk3';
+import { Option } from 'src/components/settings/shared/Option';
 
 export const BarSettings = (): JSX.Element => {
     return (
@@ -53,6 +53,19 @@ export const BarSettings = (): JSX.Element => {
                     enums={['none', 'full', 'top', 'right', 'bottom', 'left', 'horizontal', 'vertical']}
                 />
                 <Option opt={options.theme.bar.border.width} title="Bar Border Width" type="string" />
+                <Option opt={options.theme.bar.enableShadow} title="Enable Shadow" type="boolean" />
+                <Option
+                    opt={options.theme.bar.shadow}
+                    title="Bar Shadow"
+                    subtitle="Requires that sufficient margins have been set to house the shadow."
+                    type="string"
+                />
+                <Option
+                    opt={options.theme.bar.shadowMargins}
+                    title="Bar Shadow Margins"
+                    subtitle="Margins count mouse events as clicks 'inside' the menu."
+                    type="string"
+                />
                 <Option
                     opt={options.theme.bar.border_radius}
                     title="Border Radius"
@@ -141,10 +154,75 @@ export const BarSettings = (): JSX.Element => {
                 <Header title="Workspaces" />
                 <Option opt={options.theme.bar.buttons.workspaces.enableBorder} title="Button Border" type="boolean" />
                 <Option
+                    opt={options.bar.workspaces.monitorSpecific}
+                    title="Monitor Specific"
+                    subtitle="Only workspaces of the monitor are shown."
+                    type="boolean"
+                />
+                <Option opt={options.bar.workspaces.show_icons} title="Show Workspace Icons" type="boolean" />
+                <Option opt={options.bar.workspaces.show_numbered} title="Show Workspace Numbers" type="boolean" />
+                <Option
+                    opt={options.bar.workspaces.workspaceMask}
+                    title="Zero-Based Workspace Numbers"
+                    subtitle={
+                        'Start all workspace numbers from 0 on each monitor.\n' +
+                        "Requires 'Show Workspace Numbers' to be enabled."
+                    }
+                    type="boolean"
+                />
+                <Option
+                    opt={options.bar.workspaces.showWsIcons}
+                    title="Map Workspaces to Icons"
+                    subtitle="https://hyprpanel.com/configuration/panel.html#show-workspace-icons"
+                    type="boolean"
+                />
+                <Option
+                    opt={options.bar.workspaces.showApplicationIcons}
+                    title="Map Workspaces to Application Icons"
+                    subtitle="Requires 'Map Workspace to Icons' enabled. See docs."
+                    type="boolean"
+                />
+                <Option
+                    opt={options.bar.workspaces.applicationIconOncePerWorkspace}
+                    title="Hide Duplicate App Icons"
+                    type="boolean"
+                />
+                <Option
                     opt={options.bar.workspaces.showAllActive}
                     title="Mark Active Workspace On All Monitors"
                     subtitle="Marks the currently active workspace on each monitor."
                     type="boolean"
+                />
+                <Option
+                    opt={options.bar.workspaces.numbered_active_indicator}
+                    title="Numbered Workspace Identifier"
+                    subtitle="Only applicable if Workspace Numbers are enabled"
+                    type="enum"
+                    enums={['underline', 'highlight', 'color']}
+                />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.smartHighlight}
+                    title="Smart Highlight"
+                    subtitle="Automatically determines highlight color for mapped icons."
+                    type="boolean"
+                />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.numbered_active_highlight_border}
+                    title="Highlight Radius"
+                    subtitle="Only applicable if Workspace Numbers are enabled"
+                    type="string"
+                />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.numbered_active_highlight_padding}
+                    title="Highlight Padding"
+                    subtitle="Only applicable if Workspace Numbers are enabled"
+                    type="string"
+                />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.numbered_inactive_padding}
+                    title="Inactive Padding"
+                    subtitle="Only applicable if Workspace Numbers are enabled"
+                    type="string"
                 />
                 <Option
                     opt={options.theme.bar.buttons.workspaces.pill.radius}
@@ -176,53 +254,9 @@ export const BarSettings = (): JSX.Element => {
                     subtitle="Only applicable to numbered workspaces and mapped icons. Adjust carefully."
                     type="string"
                 />
-                <Option opt={options.bar.workspaces.show_icons} title="Show Workspace Icons" type="boolean" />
                 <Option opt={options.bar.workspaces.icons.available} title="Workspace Available" type="string" />
                 <Option opt={options.bar.workspaces.icons.active} title="Workspace Active" type="string" />
                 <Option opt={options.bar.workspaces.icons.occupied} title="Workspace Occupied" type="string" />
-                <Option opt={options.bar.workspaces.show_numbered} title="Show Workspace Numbers" type="boolean" />
-                <Option
-                    opt={options.bar.workspaces.numbered_active_indicator}
-                    title="Numbered Workspace Identifier"
-                    subtitle="Only applicable if Workspace Numbers are enabled"
-                    type="enum"
-                    enums={['underline', 'highlight', 'color']}
-                />
-                <Option
-                    opt={options.theme.bar.buttons.workspaces.smartHighlight}
-                    title="Smart Highlight"
-                    subtitle="Automatically determines highlight color for mapped icons."
-                    type="boolean"
-                />
-                <Option
-                    opt={options.theme.bar.buttons.workspaces.numbered_active_highlight_border}
-                    title="Highlight Radius"
-                    subtitle="Only applicable if Workspace Numbers are enabled"
-                    type="string"
-                />
-                <Option
-                    opt={options.theme.bar.buttons.workspaces.numbered_active_highlight_padding}
-                    title="Highlight Padding"
-                    subtitle="Only applicable if Workspace Numbers are enabled"
-                    type="string"
-                />
-                <Option
-                    opt={options.bar.workspaces.showWsIcons}
-                    title="Map Workspaces to Icons"
-                    subtitle="https://hyprpanel.com/configuration/panel.html#show-workspace-icons"
-                    type="boolean"
-                />
-                <Option
-                    opt={options.bar.workspaces.showApplicationIcons}
-                    title="Map Workspaces to Application Icons"
-                    subtitle="Requires 'Map Workspace to Icons' enabled. See docs."
-                    type="boolean"
-                />
-                <Option
-                    opt={options.bar.workspaces.applicationIconOncePerWorkspace}
-                    title="Hide Duplicate App Icons"
-                    type="boolean"
-                />
                 <Option
                     opt={options.bar.workspaces.applicationIconMap}
                     title="App Icon Mappings"
@@ -254,27 +288,9 @@ export const BarSettings = (): JSX.Element => {
                 />
                 <Option
                     opt={options.bar.workspaces.workspaces}
-                    title="Total Workspaces"
-                    subtitle="Minimum number of workspaces to always show."
+                    title="Persistent Workspaces"
+                    subtitle="Requires workspace rules to be defined if 'Monitor Specific' is selected."
                     type="number"
-                />
-                <Option
-                    opt={options.bar.workspaces.monitorSpecific}
-                    title="Monitor Specific"
-                    subtitle="Only workspaces of the monitor are shown."
-                    type="boolean"
-                />
-                <Option
-                    opt={options.bar.workspaces.hideUnoccupied}
-                    title="Hide Unoccupied"
-                    subtitle="Only show occupied or active workspaces"
-                    type="boolean"
-                />
-                <Option
-                    opt={options.bar.workspaces.workspaceMask}
-                    title="Mask Workspace Numbers On Monitors"
-                    subtitle="For monitor-specific numbering"
-                    type="boolean"
                 />
                 <Option
                     opt={options.bar.workspaces.reverse_scroll}

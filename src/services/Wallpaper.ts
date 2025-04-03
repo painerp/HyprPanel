@@ -3,7 +3,9 @@ import { dependencies, sh } from '../lib/utils';
 import options from '../options';
 import { execAsync } from 'astal/process';
 import { monitorFile } from 'astal/file';
+import AstalHyprland from 'gi://AstalHyprland?version=0.1';
 
+const hyprlandService = AstalHyprland.get_default();
 const WP = `${GLib.get_home_dir()}/.config/background`;
 
 @register({ GTypeName: 'Wallpaper' })
@@ -14,35 +16,34 @@ class Wallpaper extends GObject.Object {
     #wallpaper(): void {
         if (!dependencies('swww')) return;
 
-        sh('hyprctl cursorpos')
-            .then((pos) => {
-                const transitionCmd = [
-                    'swww',
-                    'img',
-                    '--invert-y',
-                    '--transition-type',
-                    'grow',
-                    '--transition-duration',
-                    '1.5',
-                    '--transition-fps',
-                    '30',
-                    '--transition-pos',
-                    pos.replace(' ', ''),
-                    WP,
-                ].join(' ');
+        try {
+            const cursorPosition = hyprlandService.message('cursorpos');
+            const transitionCmd = [
+                'swww',
+                'img',
+                '--invert-y',
+                '--transition-type',
+                'grow',
+                '--transition-duration',
+                '1.5',
+                '--transition-fps',
+                '60',
+                '--transition-pos',
+                cursorPosition.replace(' ', ''),
+                WP,
+            ].join(' ');
 
-                sh(transitionCmd)
-                    .then(() => {
-                        this.notify('wallpaper');
-                        this.emit('changed', true);
-                    })
-                    .catch((err) => {
-                        console.error('Error setting wallpaper:', err);
-                    });
-            })
-            .catch((err) => {
-                console.error('Error getting cursor position:', err);
-            });
+            sh(transitionCmd)
+                .then(() => {
+                    this.notify('wallpaper');
+                    this.emit('changed', true);
+                })
+                .catch((err) => {
+                    console.error('Error setting wallpaper:', err);
+                });
+        } catch (err) {
+            console.error('Error getting cursor position:', err);
+        }
     }
 
     async #setWallpaper(path: string): Promise<void> {
@@ -100,7 +101,7 @@ class Wallpaper extends GObject.Object {
             }
         });
 
-        if (dependencies('swww') && options.wallpaper.enable.get()) {
+        if (options.wallpaper.enable.get() && dependencies('swww')) {
             this.#isRunning = true;
 
             monitorFile(WP, () => {

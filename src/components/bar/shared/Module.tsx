@@ -5,18 +5,17 @@ import options from 'src/options';
 
 const { style } = options.theme.bar.buttons;
 
-const undefinedVar = Variable(undefined);
-
 export const Module = ({
     icon,
     textIcon,
     useTextIcon = bind(Variable(false)),
     label,
-    tooltipText,
+    tooltipText = '',
     boxClass,
     isVis,
     props = {},
-    showLabelBinding = bind(undefinedVar),
+    showLabelBinding = bind(Variable(true)),
+    showIconBinding = bind(Variable(true)),
     showLabel,
     labelHook,
     hook,
@@ -24,9 +23,9 @@ export const Module = ({
     const getIconWidget = (useTxtIcn: boolean): JSX.Element | undefined => {
         let iconWidget: JSX.Element | undefined;
 
-        if (icon !== undefined && !useTxtIcn) {
+        if (icon !== undefined && icon.get() != '' && !useTxtIcn) {
             iconWidget = <icon className={`txt-icon bar-button-icon module-icon ${boxClass}`} icon={icon} />;
-        } else if (textIcon !== undefined) {
+        } else if (textIcon !== undefined && textIcon.get() != '') {
             iconWidget = <label className={`txt-icon bar-button-icon module-icon ${boxClass}`} label={textIcon} />;
         }
 
@@ -48,12 +47,12 @@ export const Module = ({
     );
 
     const componentChildren = Variable.derive(
-        [showLabelBinding, useTextIcon],
-        (showLabel: boolean, forceTextIcon: boolean): JSX.Element[] => {
+        [showLabelBinding, showIconBinding, useTextIcon],
+        (showLabel: boolean, showIcon: boolean, forceTextIcon: boolean): JSX.Element[] => {
             const childrenArray = [];
             const iconWidget = getIconWidget(forceTextIcon);
 
-            if (iconWidget !== undefined) {
+            if (showIcon && iconWidget !== undefined) {
                 childrenArray.push(iconWidget);
             }
 
