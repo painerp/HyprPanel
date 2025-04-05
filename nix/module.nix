@@ -290,7 +290,7 @@ in
       bar.customModules.weather.rightClick = mkStrOption "";
       bar.customModules.weather.scrollDown = mkStrOption "";
       bar.customModules.weather.scrollUp = mkStrOption "";
-      bar.customModules.weather.unit = mkStrOption "imperial";
+      bar.customModules.weather.unit = mkStrOption "metric";
       bar.launcher.autoDetectIcon = mkBoolOption false;
       bar.launcher.icon = mkStrOption "󰣇";
       bar.launcher.middleClick = mkStrOption "";
@@ -323,6 +323,9 @@ in
       bar.scrollSpeed = mkIntOption 5;
       bar.systray.ignore = mkStrListOption [];
       bar.volume.label = mkBoolOption true;
+      bar.volume.output = mkBoolOption true;
+      bar.volume.input = mkBoolOption false;
+      bar.volume.hideMutedLabel = mkBoolOption false;
       bar.volume.middleClick = mkStrOption "";
       bar.volume.rightClick = mkStrOption "";
       bar.volume.scrollDown = mkStrOption "${package}/bin/hyprpanel 'vol -5'";
