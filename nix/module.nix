@@ -94,7 +94,7 @@ in
     settings = {
       layout = mkOption {
         type = jsonFormat.type;
-        default = null;
+        default = { };
         example = ''
           {
             "bar.layouts" = {
@@ -291,6 +291,16 @@ in
       bar.customModules.weather.scrollDown = mkStrOption "";
       bar.customModules.weather.scrollUp = mkStrOption "";
       bar.customModules.weather.unit = mkStrOption "metric";
+      bar.customModules.worldclock.format = mkStrOption "%I:%M:%S %p %Z";
+      bar.customModules.worldclock.formatDiffDate = mkStrOption "%a %b %d  %I:%M:%S %p %Z";
+      bar.customModules.worldclock.icon = mkStrOption "󱉊";
+      bar.customModules.worldclock.middleClick = mkStrOption "";
+      bar.customModules.worldclock.rightClick = mkStrOption "";
+      bar.customModules.worldclock.scrollDown = mkStrOption "";
+      bar.customModules.worldclock.scrollUp = mkStrOption "";
+      bar.customModules.worldclock.showIcon = mkBoolOption true;
+      bar.customModules.worldclock.showTime = mkBoolOption true;
+      bar.customModules.worldclock.tz = mkStrListOption ["America/New_York" "Europe/Paris" "Asia/Tokyo"];
       bar.launcher.autoDetectIcon = mkBoolOption false;
       bar.launcher.icon = mkStrOption "󰣇";
       bar.launcher.middleClick = mkStrOption "";
@@ -362,15 +372,17 @@ in
       bar.workspaces.workspaces = mkIntOption 5;
       bar.workspaces.workspaceIconMap = mkOption {
         type = jsonFormat.type;
-        default = null;
+        default = { };
         example = ''
+        {
           "1": "<U+EEFE>",
           "2": "<U+F269>",
           "3": "<U+EAC4>",
           "4": "<U+EC1B>",
           "5": "<U+F02B4>",
           "6": "<U+F1FF> ",
-          "7": "<U+EB1C>"        
+          "7": "<U+EB1C>"
+        }
         '';
       };
       dummy = mkBoolOption true;
@@ -509,6 +521,8 @@ in
       theme.bar.buttons.modules.updates.spacing = mkStrOption "0.45em";
       theme.bar.buttons.modules.weather.enableBorder = mkBoolOption false;
       theme.bar.buttons.modules.weather.spacing = mkStrOption "0.45em";
+      theme.bar.buttons.modules.worldclock.enableBorder = mkBoolOption false;
+      theme.bar.buttons.modules.worldclock.spacing = mkStrOption "0.45em";
       theme.bar.buttons.monochrome = mkBoolOption false;
       theme.bar.buttons.network.enableBorder = mkBoolOption false;
       theme.bar.buttons.network.spacing = mkStrOption "0.5em";
