@@ -10,18 +10,28 @@ export const DeviceStatus = ({ device }: DeviceStatusProps): JSX.Element => {
         },
     );
 
+    const labelBinding = Variable.derive(
+        [bind(device, 'connected'), bind(device, 'batteryPercentage')],
+        (connected, batteryPercentage) => {
+            return connected
+                ? 'Connected' + (batteryPercentage >= 0 ? ` (${Math.floor(batteryPercentage * 100)}%)` : '')
+                : 'Paired';
+        },
+    );
+
     return (
         <revealer
             halign={Gtk.Align.START}
             revealChild={revealerBinding()}
             onDestroy={() => {
                 revealerBinding.drop();
+                labelBinding.drop();
             }}
         >
             <label
                 halign={Gtk.Align.START}
                 className={'connection-status dim'}
-                label={bind(device, 'connected').as((connected) => (connected ? 'Connected' : 'Paired'))}
+                label={labelBinding().as((label) => label)}
             />
         </revealer>
     );
