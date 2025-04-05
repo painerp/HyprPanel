@@ -1270,6 +1270,7 @@ const options = mkOptions({
         },
         dashboard: {
             powermenu: {
+                enabled: opt(true),
                 confirmation: opt(true),
                 sleep: opt('systemctl suspend'),
                 reboot: opt('systemctl reboot'),

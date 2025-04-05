@@ -41,7 +41,9 @@
     }
 
     .power-menu-container {
-        margin-left: 0em;
+        &:not(.most-used) {
+            margin-left: 0;
+        }
 
         .dashboard-button {
             min-width: 3em;

@@ -403,6 +403,7 @@ in
       menus.dashboard.directories.right.directory2.label = mkStrOption "󰉏 Pictures";
       menus.dashboard.directories.right.directory3.command = mkStrOption "bash -c \"xdg-open $HOME/\"";
       menus.dashboard.directories.right.directory3.label = mkStrOption "󱂵 Home";
+      menus.dashboard.powermenu.enabled = mkBoolOption true;
       menus.dashboard.powermenu.avatar.image = mkStrOption "$HOME/.face.icon";
       menus.dashboard.powermenu.avatar.name = mkStrOption "system";
       menus.dashboard.powermenu.confirmation = mkBoolOption true;

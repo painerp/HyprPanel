@@ -15,6 +15,7 @@ export const DashboardMenuSettings = (): JSX.Element => {
         >
             <box vertical>
                 <Header title="Power Menu" />
+                <Option opt={options.menus.dashboard.powermenu.enabled} title="Enabled" type="boolean" />
                 <Option
                     opt={options.menus.dashboard.powermenu.avatar.image}
                     title="Profile Image"

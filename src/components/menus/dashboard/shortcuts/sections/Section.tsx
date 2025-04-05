@@ -12,6 +12,7 @@ import {
 import { LeftColumn, RightColumn } from './Column';
 import { SettingsButton } from '../buttons/SettingsButton';
 import { RecordingButton } from '../buttons/RecordingButton';
+import { LogOut, Reboot, ShutDown, Sleep } from '../../profile/PowerButtons.tsx';
 
 const { left, right } = options.menus.dashboard.shortcuts;
 
@@ -41,7 +42,7 @@ const rightBindings = [
     bind(isRecording),
 ];
 
-export const LeftShortcuts = (): JSX.Element => {
+export const LeftShortcuts = ({ isProfileEnabled }: LeftShortcutsProps): JSX.Element => {
     return (
         <box>
             {Variable.derive(leftBindings, () => {
@@ -56,14 +57,18 @@ export const LeftShortcuts = (): JSX.Element => {
                 leftCardHidden.set(false);
 
                 return (
-                    <box className={'container most-used dashboard-card'}>
+                    <box
+                        className={
+                            (!isProfileEnabled ? 'power-menu-container ' : '') + 'container most-used dashboard-card'
+                        }
+                    >
                         <LeftColumn isVisible={isVisibleRight && isVisibleLeft}>
-                            <LeftShortcut1 />
-                            <LeftShortcut2 />
+                            {!isProfileEnabled ? <ShutDown /> : <LeftShortcut1 />}
+                            {!isProfileEnabled ? <Reboot /> : <LeftShortcut2 />}
                         </LeftColumn>
                         <RightColumn>
-                            <LeftShortcut3 />
-                            <LeftShortcut4 />
+                            {!isProfileEnabled ? <LogOut /> : <LeftShortcut3 />}
+                            {!isProfileEnabled ? <Sleep /> : <LeftShortcut4 />}
                         </RightColumn>
                     </box>
                 );
@@ -71,6 +76,10 @@ export const LeftShortcuts = (): JSX.Element => {
         </box>
     );
 };
+
+interface LeftShortcutsProps {
+    isProfileEnabled: boolean;
+}
 
 export const RightShortcuts = (): JSX.Element => {
     return (

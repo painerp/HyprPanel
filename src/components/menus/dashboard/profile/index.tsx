@@ -2,7 +2,11 @@ import { Gtk } from 'astal/gtk3';
 import { UserProfile } from './Profile';
 import { PowerMenu } from './PowerMenu';
 
-const Profile = (): JSX.Element => {
+export const Profile = ({ isEnabled }: ProfileProps): JSX.Element => {
+    if (!isEnabled) {
+        return;
+    }
+
     return (
         <box className={'profiles-container'} halign={Gtk.Align.FILL} hexpand>
             <UserProfile />
@@ -11,4 +15,6 @@ const Profile = (): JSX.Element => {
     );
 };
 
-export { Profile };
+interface ProfileProps {
+    isEnabled: boolean;
+}

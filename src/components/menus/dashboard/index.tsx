@@ -8,18 +8,24 @@ import options from 'src/options.js';
 import { bind, Variable } from 'astal';
 import { RevealerTransitionMap } from 'src/lib/constants/options.js';
 
-const { controls, shortcuts, stats, directories } = options.menus.dashboard;
+const { controls, shortcuts, stats, directories, powermenu } = options.menus.dashboard;
 const { transition } = options.menus;
 
 export default (): JSX.Element => {
     const dashboardBinding = Variable.derive(
-        [bind(controls.enabled), bind(shortcuts.enabled), bind(stats.enabled), bind(directories.enabled)],
-        (isControlsEnabled, isShortcutsEnabled, isStatsEnabled, isDirectoriesEnabled) => {
+        [
+            bind(controls.enabled),
+            bind(shortcuts.enabled),
+            bind(stats.enabled),
+            bind(directories.enabled),
+            bind(powermenu.enabled),
+        ],
+        (isControlsEnabled, isShortcutsEnabled, isStatsEnabled, isDirectoriesEnabled, isProfileEnabled) => {
             return [
                 <box className={'dashboard-content-container'} vertical>
                     <box className={'dashboard-content-items'} vertical>
-                        <Profile />
-                        <Shortcuts isEnabled={isShortcutsEnabled} />
+                        <Profile isEnabled={isProfileEnabled} />
+                        <Shortcuts isEnabled={isShortcutsEnabled} isProfileEnabled={isProfileEnabled} />
                         <Controls isEnabled={isControlsEnabled} />
                         <Directories isEnabled={isDirectoriesEnabled} />
                         <Stats isEnabled={isStatsEnabled} />
