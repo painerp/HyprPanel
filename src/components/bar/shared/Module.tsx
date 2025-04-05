@@ -51,15 +51,16 @@ export const Module = ({
         (showLabel: boolean, showIcon: boolean, forceTextIcon: boolean): JSX.Element[] => {
             const childrenArray = [];
             const iconWidget = getIconWidget(forceTextIcon);
+            const iconVisible = showIcon && iconWidget !== undefined;
 
-            if (showIcon && iconWidget !== undefined) {
+            if (iconVisible) {
                 childrenArray.push(iconWidget);
             }
 
             if (showLabel) {
                 childrenArray.push(
                     <label
-                        className={`bar-button-label module-label ${boxClass}`}
+                        className={`bar-button-label module-label ${boxClass} ${!iconVisible ? 'no-icon' : ''}`}
                         label={label ?? ''}
                         setup={labelHook}
                     />,
