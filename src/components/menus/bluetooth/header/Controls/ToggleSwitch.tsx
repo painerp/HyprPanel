@@ -22,7 +22,7 @@ export const ToggleSwitch = (): JSX.Element => (
         className="menu-switch bluetooth"
         halign={Gtk.Align.END}
         hexpand
-        active={bluetoothService.isPowered}
+        active={bind(isPowered)}
         setup={(self) => {
             self.connect('notify::active', () => {
                 blockBluetooth(!self.active);
