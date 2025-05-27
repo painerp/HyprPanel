@@ -2,6 +2,7 @@ import { opt } from 'src/lib/options';
 
 export default {
     powermenu: {
+        enabled: opt(true),
         confirmation: opt(true),
         sleep: opt('systemctl suspend'),
         reboot: opt('systemctl reboot'),
