@@ -1,6 +1,4 @@
-import { VolumeIcons } from 'src/lib/types/volume';
-
-export const outputIcons: VolumeIcons = {
+export const outputIcons: Record<number, string> = {
     101: '󱄠',
     66: '󰕾',
     34: '󰖀',
@@ -8,7 +6,7 @@ export const outputIcons: VolumeIcons = {
     0: '󰝟',
 };
 
-export const inputIcons: VolumeIcons = {
+export const inputIcons: Record<number, string> = {
     51: '󰍬',
     1: '󰍮',
     0: '󰍭',
@@ -26,7 +24,7 @@ export const inputIcons: VolumeIcons = {
  *
  * @returns The corresponding volume icon as a string.
  */
-export const getIcon = (icons: VolumeIcons, isMuted: boolean, vol: number): string => {
+export const getIcon = (icons: Record<number, string>, isMuted: boolean, vol: number): string => {
     if (isMuted) return icons[0];
     const keys: number[] = Object.keys(icons).map(Number).reverse();
     const icon: number = keys.find((threshold) => threshold <= Math.round(vol * 100)) ?? keys[0];

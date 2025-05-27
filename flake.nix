@@ -61,6 +61,9 @@
               bluez-tools
               grimblast
               brightnessctl
+              gnome-bluetooth
+              gtksourceview3
+              libsoup_3
               (python3.withPackages (
                 ps: with ps; [
                   gpustat

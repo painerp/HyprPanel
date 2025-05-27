@@ -1,7 +1,9 @@
 import { bind } from 'astal';
 import { Gdk, Gtk } from 'astal/gtk3';
 import AstalWp from 'gi://AstalWp?version=0.1';
-import { capitalizeFirstLetter, isScrollDown, isScrollUp } from 'src/lib/utils';
+import options from 'src/configuration';
+import { isScrollUp, isScrollDown } from 'src/lib/events/mouse';
+import { capitalizeFirstLetter } from 'src/lib/string/formatters';
 
 export const Slider = ({ device, type }: SliderProps): JSX.Element => {
     return (
@@ -25,8 +27,8 @@ export const Slider = ({ device, type }: SliderProps): JSX.Element => {
                 max={1}
                 onDragged={({ value, dragging }) => {
                     if (dragging) {
-                        device.volume = value;
-                        device.mute = false;
+                        device.set_volume(value);
+                        device.set_mute(false);
                     }
                 }}
                 setup={(self) => {

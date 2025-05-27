@@ -1,13 +1,13 @@
-import { openMenu } from '../../utils/menu.js';
-import options from 'src/options';
-import { runAsyncCommand, throttledScrollHandler } from 'src/components/bar/utils/helpers.js';
 import { bind, Variable } from 'astal';
-import { onMiddleClick, onPrimaryClick, onScroll, onSecondaryClick } from 'src/lib/shared/eventHandlers.js';
+import { onPrimaryClick, onSecondaryClick, onMiddleClick, onScroll } from 'src/lib/shared/eventHandlers';
 import { getIcon, inputIcons, outputIcons } from './helpers/index.js';
-import { BarBoxChild } from 'src/lib/types/bar.js';
 import { Astal } from 'astal/gtk3';
-import { VolumeIcons } from 'src/lib/types/volume';
 import AstalWp from 'gi://AstalWp?version=0.1';
+import { BarBoxChild } from 'src/components/bar/types.js';
+import options from 'src/configuration';
+import { runAsyncCommand } from '../../utils/input/commandExecutor';
+import { throttledScrollHandler } from '../../utils/input/throttle';
+import { openDropdownMenu } from '../../utils/menu';
 
 const wireplumber = AstalWp.get_default() as AstalWp.Wp;
 const audioService = wireplumber?.audio;
@@ -152,7 +152,7 @@ const Volume = (): BarBoxChild => {
 
                         disconnectFunctions.push(
                             onPrimaryClick(self, (clicked, event) => {
-                                openMenu(clicked, event, 'audiomenu');
+                                openDropdownMenu(clicked, event, 'audiomenu');
                             }),
                         );
 
@@ -168,7 +168,9 @@ const Volume = (): BarBoxChild => {
                             }),
                         );
 
-                        disconnectFunctions.push(onScroll(self, throttledHandler, scrollUp.get(), scrollDown.get()));
+                        disconnectFunctions.push(
+                            onScroll(self, throttledHandler, scrollUp.get(), scrollDown.get()),
+                        );
                     },
                 );
             },
@@ -177,7 +179,7 @@ const Volume = (): BarBoxChild => {
 };
 
 interface VolumeIconProps {
-    icons: VolumeIcons;
+    icons: Record<number, string>;
     isMuted: boolean;
     volume: number;
     extra_classes: string;

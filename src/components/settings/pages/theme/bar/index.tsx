@@ -1,7 +1,7 @@
 import { Option } from 'src/components/settings/shared/Option';
 import { Header } from 'src/components/settings/shared/Header';
 
-import options from 'src/options';
+import options from 'src/configuration';
 import { Gtk } from 'astal/gtk3';
 
 export const BarTheme = (): JSX.Element => {
@@ -35,7 +35,7 @@ export const BarTheme = (): JSX.Element => {
                 <Option opt={options.theme.bar.border.color} title="Bar Border Color" type="color" />
                 <Option
                     opt={options.theme.bar.buttons.opacity}
-                    title="Button Opacity"
+                    title="Module Opacity"
                     type="number"
                     increment={5}
                     min={0}
@@ -77,16 +77,32 @@ export const BarTheme = (): JSX.Element => {
                     type="color"
                 />
 
+                {/* Separator Section */}
+                <Header title="Separator" />
+                <Option opt={options.theme.bar.buttons.separator.color} title="Color" type="color" />
+
                 {/* Dashboard Button Section */}
                 <Header title="Dashboard Button" />
-                <Option opt={options.theme.bar.buttons.dashboard.background} title="Background" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.dashboard.background}
+                    title="Background"
+                    type="color"
+                />
                 <Option opt={options.theme.bar.buttons.dashboard.icon} title="Icon" type="color" />
                 <Option opt={options.theme.bar.buttons.dashboard.border} title="Border" type="color" />
 
                 {/* Workspaces Section */}
                 <Header title="Workspaces" />
-                <Option opt={options.theme.bar.buttons.workspaces.background} title="Background" type="color" />
-                <Option opt={options.theme.bar.buttons.workspaces.hover} title="Workspace Hover Color" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.background}
+                    title="Background"
+                    type="color"
+                />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.hover}
+                    title="Workspace Hover Color"
+                    type="color"
+                />
                 <Option
                     opt={options.theme.bar.buttons.workspaces.available}
                     title="Workspace Available Color"
@@ -97,7 +113,11 @@ export const BarTheme = (): JSX.Element => {
                     title="Workspace Occupied Color"
                     type="color"
                 />
-                <Option opt={options.theme.bar.buttons.workspaces.active} title="Workspace Active Color" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.workspaces.active}
+                    title="Workspace Active Color"
+                    type="color"
+                />
                 <Option
                     opt={options.theme.bar.buttons.workspaces.numbered_active_highlighted_text_color}
                     title="Highlighted Workspace Text Color"
@@ -112,7 +132,11 @@ export const BarTheme = (): JSX.Element => {
 
                 {/* Window Title Section */}
                 <Header title="Window Title" />
-                <Option opt={options.theme.bar.buttons.windowtitle.background} title="Background" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.windowtitle.background}
+                    title="Background"
+                    type="color"
+                />
                 <Option opt={options.theme.bar.buttons.windowtitle.text} title="Text" type="color" />
                 <Option opt={options.theme.bar.buttons.windowtitle.icon} title="Icon" type="color" />
                 <Option
@@ -176,7 +200,11 @@ export const BarTheme = (): JSX.Element => {
 
                 {/* Bluetooth Section */}
                 <Header title="Bluetooth" />
-                <Option opt={options.theme.bar.buttons.bluetooth.background} title="Background" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.bluetooth.background}
+                    title="Background"
+                    type="color"
+                />
                 <Option opt={options.theme.bar.buttons.bluetooth.text} title="Text" type="color" />
                 <Option opt={options.theme.bar.buttons.bluetooth.icon} title="Icon" type="color" />
                 <Option
@@ -193,7 +221,11 @@ export const BarTheme = (): JSX.Element => {
                 {/* System Tray Section */}
                 <Header title="System Tray" />
                 <Option opt={options.theme.bar.buttons.systray.border} title="Border" type="color" />
-                <Option opt={options.theme.bar.buttons.systray.customIcon} title="Custom Icons" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.systray.customIcon}
+                    title="Custom Icons"
+                    type="color"
+                />
                 <Option opt={options.theme.bar.buttons.systray.background} title="Background" type="color" />
 
                 {/* Battery Section */}
@@ -230,8 +262,16 @@ export const BarTheme = (): JSX.Element => {
 
                 {/* Notifications Section */}
                 <Header title="Notifications" />
-                <Option opt={options.theme.bar.buttons.notifications.background} title="Background" type="color" />
-                <Option opt={options.theme.bar.buttons.notifications.total} title="Notification Count" type="color" />
+                <Option
+                    opt={options.theme.bar.buttons.notifications.background}
+                    title="Background"
+                    type="color"
+                />
+                <Option
+                    opt={options.theme.bar.buttons.notifications.total}
+                    title="Notification Count"
+                    type="color"
+                />
                 <Option opt={options.theme.bar.buttons.notifications.icon} title="Icon" type="color" />
                 <Option
                     opt={options.theme.bar.buttons.notifications.icon_background}
